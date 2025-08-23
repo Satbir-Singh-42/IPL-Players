@@ -10,22 +10,22 @@
   header { background: #1c2128; padding: 20px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
   h1 { margin: 0; font-size: 24px; }
   .search-box { margin: 15px auto; padding: 10px; width: 280px;
-                border-radius: 10px; border: none; font-size: 16px; background: #161b22; color: #e6edf3; display: block; }
+                 border-radius: 10px; border: none; font-size: 16px; background: #161b22; color: #e6edf3; display: block; }
   .reset-btn { margin: 10px auto; display: block; padding: 8px 16px; font-size: 14px;
-               background: #238636; color: white; border: none; border-radius: 8px; cursor: pointer; }
+                background: #238636; color: white; border: none; border-radius: 8px; cursor: pointer; }
   main { padding: 20px; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
   .card { background: #161b22; border-radius: 16px; overflow: hidden; text-align: center;
-          padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: transform 0.2s ease; position: relative; }
+           padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: transform 0.2s ease; position: relative; }
   .card:hover { transform: translateY(-5px); }
   .card img { width: 100%; height: auto; border-radius: 8px; cursor: pointer; }
   .card-title { margin-top: 8px; font-size: 16px; font-weight: 600; }
   .toggle-box { position: absolute; top: 8px; right: 10px; font-size: 14px; color: #e6edf3; }
   .toggle-box input { transform: scale(1.4); margin-right: 6px; cursor: pointer; }
   #viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 1000; }
+             background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 1000; }
   #viewer img { max-width: 100vw; max-height: 100vh; object-fit: contain;
-                opacity: 0; transform: scale(0.98); transition: opacity 0.4s ease, transform 0.4s ease; }
+                 opacity: 0; transform: scale(0.98); transition: opacity 0.4s ease, transform 0.4s ease; }
 </style>
 </head>
 <body>
@@ -1061,16 +1061,46 @@
 </div>
 
 <script>
+  const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPKsFMoUEvPE3xg_Kw2HxEpbCbkpkvDHTJZbDWgGso6eQCLkgeYx9i2SZbEIPChdOVFeEGnw_H17gr/pub?gid=51346915&single=true&output=csv";
+  const playerStatus = {};
+
+  function syncWithSheet() {
+    fetch(sheetURL)
+      .then(res => res.text())
+      .then(csv => {
+        const rows = csv.split('\n').slice(1);
+        const updatedStatus = {};
+
+        rows.forEach(row => {
+          const cols = row.split(',');
+          const name = cols[1]?.trim().toLowerCase().replace(/\s+/g, '');
+          const status = cols[4]?.trim().toLowerCase();
+          updatedStatus[name] = status;
+        });
+
+        document.querySelectorAll('.card').forEach(card => {
+          const name = card.dataset.name.replace(/\s+/g, '');
+          const checkbox = card.querySelector('input[type="checkbox"]');
+          if (updatedStatus[name] && updatedStatus[name] !== 'unsold') {
+            card.dataset.visible = "false";
+            checkbox.checked = false;
+          } else {
+            card.dataset.visible = "true";
+            checkbox.checked = true;
+          }
+        });
+      });
+  }
+
+  syncWithSheet(); // Initial sync
+
+  function resetView() {
+    syncWithSheet(); // Re-sync from sheet
+  }
+
   function toggleCard(checkbox) {
     const card = checkbox.closest('.card');
     card.dataset.visible = checkbox.checked ? "true" : "false";
-  }
-
-  function resetView() {
-    document.querySelectorAll('.card input[type="checkbox"]').forEach(cb => {
-      cb.checked = true;
-      cb.closest('.card').dataset.visible = "true";
-    });
   }
 
   function openViewer(src, clickedImg) {
