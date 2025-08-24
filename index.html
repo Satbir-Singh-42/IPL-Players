@@ -109,40 +109,39 @@
       max-width: 300px;
     }
     
-    #viewer {
-      justify-content: flex-start;
-      padding-top: 20px;
-    }
-    
-    #viewer img {
-      width: 100%;
-      height: auto;
-      max-height: 55vh;
-      margin-bottom: 10px;
-    }
-    
-    #actionButtons {
-      position: relative;
-      bottom: auto;
-      left: auto;
-      transform: none;
-      justify-content: center;
-      gap: 10px;
-      padding: 0 10px;
-      margin-top: auto;
-      margin-bottom: 20px;
-    }
-    
-    #actionButtons button {
-      padding: 12px 20px;
-      font-size: 16px;
-      flex: 1;
-      min-width: 0;
-    }
-    
-    /* Touch-friendly buttons */
-    button {
-      min-height: 44px; /* Minimum touch target size */
+     #viewer {
+    justify-content: flex-start;
+    padding: 20px 10px 100px; /* reserve space for buttons */
+    box-sizing: border-box;
+  }
+
+  #viewer img {
+    width: 100%;
+    height: auto;
+    max-height: 70vh; /* leave room for buttons */
+    margin: auto 0;
+  }
+
+  #actionButtons {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    justify-content: center;
+    gap: 10px;
+    width: 90%;
+    z-index: 2000;
+  }
+
+  #actionButtons button {
+    flex: 1;
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+
+  /* Touch-friendly buttons */
+  button {
+    min-height: 44px; /* Minimum touch target size */
     }
     
     .restore-btn {
@@ -166,20 +165,20 @@
     }
     
     #viewer img {
-      max-height: 50vh;
-    }
-    
-    #actionButtons {
-      flex-direction: column;
-      gap: 8px;
-      width: 90%;
-    }
-    
-    #actionButtons button {
-      width: 100%;
-      padding: 14px 16px;
-    }
+    max-height: 65vh; /* slightly smaller for tiny screens */
   }
+
+  #actionButtons {
+    flex-direction: column;
+    gap: 10px;
+    width: 90%;
+  }
+
+  #actionButtons button {
+    width: 100%;
+    padding: 14px 16px;
+  }
+}
 
   /* Prevent body scroll when viewer is open */
   body.viewer-open {
