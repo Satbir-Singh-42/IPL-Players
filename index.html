@@ -7,10 +7,11 @@
 <style>
   body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; }
   header { background: #1c2128; padding: 20px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
-  h1 { margin: 0; font-size: 24px; }
-  .search-box { margin: 15px auto; padding: 10px; width: 280px; border-radius: 10px; border: none;
-                 font-size: 16px; background: #161b22; color: #e6edf3; display: block; }
-  .reset-btn { margin: 10px auto; display: block; padding: 8px 16px; font-size: 14px;
+  h1 { margin: 0; font-size: 28px; }
+  h2 { font-size: 22px; margin: 20px 0 10px; }
+  .search-box { margin: 15px auto; padding: 12px; width: 300px; border-radius: 10px; border: none;
+                font-size: 18px; background: #161b22; color: #e6edf3; display: block; }
+  .reset-btn { margin: 10px auto; display: block; padding: 10px 20px; font-size: 16px;
                 background: #238636; color: white; border: none; border-radius: 8px; cursor: pointer; }
   main { padding: 20px; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
@@ -18,13 +19,166 @@
            padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: transform 0.2s ease; position: relative; }
   .card:hover { transform: translateY(-5px); }
   .card img { width: 100%; height: auto; border-radius: 8px; cursor: pointer; }
-  .card-title { margin-top: 8px; font-size: 16px; font-weight: 600; }
-  .toggle-box { position: absolute; top: 8px; right: 10px; font-size: 14px; color: #e6edf3; }
-  .toggle-box input { transform: scale(1.4); margin-right: 6px; cursor: pointer; }
-  #viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-             background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 1000; }
-  #viewer img { max-width: 100vw; max-height: 100vh; object-fit: contain;
-                 opacity: 0; transform: scale(0.98); transition: opacity 0.4s ease, transform 0.4s ease; }
+  .card-title { margin-top: 8px; font-size: 18px; font-weight: 600; }
+
+  .restore-btn {
+    margin-top: 8px;
+    padding: 6px 14px;
+    font-size: 14px;
+    border: none;
+    border-radius: 8px;
+    background: #007bff;
+    color: white;
+    cursor: pointer;
+  }
+  .restore-btn:hover { background: #0056b3; }
+
+  #viewer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: #000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    overflow: hidden;
+    flex-direction: column;
+  }
+
+  #viewer img {
+    width: auto;
+    height: 100vh;
+    object-fit: contain;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  #actionButtons {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    z-index: 1100;
+  }
+
+  #actionButtons button {
+  padding: 14px 32px;
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+#actionButtons button:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+/* Specific Buttons */
+#soldBtn {
+  background: linear-gradient(135deg, #28a745, #218838);
+  color: #fff;
+}
+
+#unsoldBtn {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: #fff;
+}
+
+#closeBtn {
+  background: linear-gradient(135deg, #6c757d, #5a6268);
+  color: #fff;
+}
+
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    
+    .search-box {
+      width: 90%;
+      max-width: 300px;
+    }
+    
+    #viewer img {
+      width: 100%;
+      height: auto;
+      max-height: 60vh;
+    }
+    
+    #actionButtons {
+      position: fixed;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      transform: none;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 10px;
+    }
+    
+    #actionButtons button {
+      padding: 12px 20px;
+      font-size: 16px;
+      flex: 1;
+      min-width: 0;
+    }
+    
+    /* Touch-friendly buttons */
+    button {
+      min-height: 44px; /* Minimum touch target size */
+    }
+    
+    .restore-btn {
+      padding: 10px 16px;
+      min-height: 40px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+    }
+    
+    h1 {
+      font-size: 24px;
+    }
+    
+    h2 {
+      font-size: 20px;
+    }
+    
+    #actionButtons {
+      flex-direction: column;
+      gap: 8px;
+      bottom: 10px;
+    }
+    
+    #actionButtons button {
+      width: 100%;
+      padding: 14px 16px;
+    }
+    
+    #viewer img {
+      max-height: 50vh;
+    }
+  }
+
+  /* Prevent body scroll when viewer is open */
+  body.viewer-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
 </style>
 </head>
 <body>
@@ -34,1122 +188,924 @@
   <button class="reset-btn" onclick="resetView()">Reset View</button>
 </header>
 <main>
+  <h2>Active Players</h2>
   <div class="grid" id="gallery">
 
-    <div class="card" data-name="1viratkohli" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/1 Virat Kohli.png" alt="Preview" onclick="openViewer('full_pngs/1 Virat Kohli.png', this)">
+    <div class="card" data-name="1viratkohli" data-number="1" onclick="openViewer('full_pngs/1 Virat Kohli.png', this)">
+      <img src="full_pngs/1 Virat Kohli.png" alt="Preview">
       <div class="card-title">Player 1 Virat Kohli</div>
     </div>
     
-    <div class="card" data-name="2suryakumaryadav" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/2 Suryakumar Yadav.png" alt="Preview" onclick="openViewer('full_pngs/2 Suryakumar Yadav.png', this)">
+    <div class="card" data-name="2suryakumaryadav" data-number="2" onclick="openViewer('full_pngs/2 Suryakumar Yadav.png', this)">
+      <img src="full_pngs/2 Suryakumar Yadav.png" alt="Preview">
       <div class="card-title">Player 2 Suryakumar Yadav</div>
     </div>
     
-    <div class="card" data-name="3shubmangill" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/3 Shubman Gill.png" alt="Preview" onclick="openViewer('full_pngs/3 Shubman Gill.png', this)">
+    <div class="card" data-name="3shubmangill" data-number="3" onclick="openViewer('full_pngs/3 Shubman Gill.png', this)">
+      <img src="full_pngs/3 Shubman Gill.png" alt="Preview">
       <div class="card-title">Player 3 Shubman Gill</div>
     </div>
     
-    <div class="card" data-name="4yashasvijaiswal" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/4 Yashasvi Jaiswal.png" alt="Preview" onclick="openViewer('full_pngs/4 Yashasvi Jaiswal.png', this)">
+    <div class="card" data-name="4yashasvijaiswal" data-number="4" onclick="openViewer('full_pngs/4 Yashasvi Jaiswal.png', this)">
+      <img src="full_pngs/4 Yashasvi Jaiswal.png" alt="Preview">
       <div class="card-title">Player 4 Yashasvi Jaiswal</div>
     </div>
     
-    <div class="card" data-name="5rinkusingh" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/5 Rinku Singh.png" alt="Preview" onclick="openViewer('full_pngs/5 Rinku Singh.png', this)">
+    <div class="card" data-name="5rinkusingh" data-number="5" onclick="openViewer('full_pngs/5 Rinku Singh.png', this)">
+      <img src="full_pngs/5 Rinku Singh.png" alt="Preview">
       <div class="card-title">Player 5 Rinku Singh</div>
     </div>
     
-    <div class="card" data-name="6harrybrook" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/6 Harry Brook.png" alt="Preview" onclick="openViewer('full_pngs/6 Harry Brook.png', this)">
+    <div class="card" data-name="6harrybrook" data-number="6" onclick="openViewer('full_pngs/6 Harry Brook.png', this)">
+      <img src="full_pngs/6 Harry Brook.png" alt="Preview">
       <div class="card-title">Player 6 Harry Brook</div>
     </div>
     
-    <div class="card" data-name="7travishead" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/7 Travis Head.png" alt="Preview" onclick="openViewer('full_pngs/7 Travis Head.png', this)">
+    <div class="card" data-name="7travishead" data-number="7" onclick="openViewer('full_pngs/7 Travis Head.png', this)">
+      <img src="full_pngs/7 Travis Head.png" alt="Preview">
       <div class="card-title">Player 7 Travis Head</div>
     </div>
     
-    <div class="card" data-name="8aidenmarkram" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/8 Aiden Markram.png" alt="Preview" onclick="openViewer('full_pngs/8 Aiden Markram.png', this)">
+    <div class="card" data-name="8aidenmarkram" data-number="8" onclick="openViewer('full_pngs/8 Aiden Markram.png', this)">
+      <img src="full_pngs/8 Aiden Markram.png" alt="Preview">
       <div class="card-title">Player 8 Aiden Markram</div>
     </div>
     
-    <div class="card" data-name="9shreyasiyer" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/9 Shreyas Iyer.png" alt="Preview" onclick="openViewer('full_pngs/9 Shreyas Iyer.png', this)">
+    <div class="card" data-name="9shreyasiyer" data-number="9" onclick="openViewer('full_pngs/9 Shreyas Iyer.png', this)">
+      <img src="full_pngs/9 Shreyas Iyer.png" alt="Preview">
       <div class="card-title">Player 9 Shreyas Iyer</div>
     </div>
     
-    <div class="card" data-name="10willjacks" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/10 Will Jacks.png" alt="Preview" onclick="openViewer('full_pngs/10 Will Jacks.png', this)">
+    <div class="card" data-name="10willjacks" data-number="10" onclick="openViewer('full_pngs/10 Will Jacks.png', this)">
+      <img src="full_pngs/10 Will Jacks.png" alt="Preview">
       <div class="card-title">Player 10 Will Jacks</div>
     </div>
     
-    <div class="card" data-name="11prithvishaw" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/11 Prithvi Shaw.png" alt="Preview" onclick="openViewer('full_pngs/11 Prithvi Shaw.png', this)">
+    <div class="card" data-name="11prithvishaw" data-number="11" onclick="openViewer('full_pngs/11 Prithvi Shaw.png', this)">
+      <img src="full_pngs/11 Prithvi Shaw.png" alt="Preview">
       <div class="card-title">Player 11 Prithvi Shaw</div>
     </div>
     
-    <div class="card" data-name="12ruturajgaikwad" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/12 Ruturaj Gaikwad.png" alt="Preview" onclick="openViewer('full_pngs/12 Ruturaj Gaikwad.png', this)">
+    <div class="card" data-name="12ruturajgaikwad" data-number="12" onclick="openViewer('full_pngs/12 Ruturaj Gaikwad.png', this)">
+      <img src="full_pngs/12 Ruturaj Gaikwad.png" alt="Preview">
       <div class="card-title">Player 12 Ruturaj Gaikwad</div>
     </div>
     
-    <div class="card" data-name="13devduttpadikkal" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/13 Devdutt Padikkal.png" alt="Preview" onclick="openViewer('full_pngs/13 Devdutt Padikkal.png', this)">
+    <div class="card" data-name="13devduttpadikkal" data-number="13" onclick="openViewer('full_pngs/13 Devdutt Padikkal.png', this)">
+      <img src="full_pngs/13 Devdutt Padikkal.png" alt="Preview">
       <div class="card-title">Player 13 Devdutt Padikkal</div>
     </div>
     
-    <div class="card" data-name="14saisudharsan" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/14 Sai Sudharsan.png" alt="Preview" onclick="openViewer('full_pngs/14 Sai Sudharsan.png', this)">
+    <div class="card" data-name="14saisudharsan" data-number="14" onclick="openViewer('full_pngs/14 Sai Sudharsan.png', this)">
+      <img src="full_pngs/14 Sai Sudharsan.png" alt="Preview">
       <div class="card-title">Player 14 Sai Sudharsan</div>
     </div>
     
-    <div class="card" data-name="15tilakvarma" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/15 Tilak Varma.png" alt="Preview" onclick="openViewer('full_pngs/15 Tilak Varma.png', this)">
+    <div class="card" data-name="15tilakvarma" data-number="15" onclick="openViewer('full_pngs/15 Tilak Varma.png', this)">
+      <img src="full_pngs/15 Tilak Varma.png" alt="Preview">
       <div class="card-title">Player 15 Tilak Varma</div>
     </div>
     
-    <div class="card" data-name="16davidwarner" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/16 David Warner.png" alt="Preview" onclick="openViewer('full_pngs/16 David Warner.png', this)">
+    <div class="card" data-name="16davidwarner" data-number="16" onclick="openViewer('full_pngs/16 David Warner.png', this)">
+      <img src="full_pngs/16 David Warner.png" alt="Preview">
       <div class="card-title">Player 16 David Warner</div>
     </div>
     
-    <div class="card" data-name="17fafduplessis" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/17 Faf du Plessis.png" alt="Preview" onclick="openViewer('full_pngs/17 Faf du Plessis.png', this)">
+    <div class="card" data-name="17fafduplessis" data-number="17" onclick="openViewer('full_pngs/17 Faf du Plessis.png', this)">
+      <img src="full_pngs/17 Faf du Plessis.png" alt="Preview">
       <div class="card-title">Player 17 Faf du Plessis</div>
     </div>
     
-    <div class="card" data-name="18rohitsharma" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/18 Rohit Sharma.png" alt="Preview" onclick="openViewer('full_pngs/18 Rohit Sharma.png', this)">
+    <div class="card" data-name="18rohitsharma" data-number="18" onclick="openViewer('full_pngs/18 Rohit Sharma.png', this)">
+      <img src="full_pngs/18 Rohit Sharma.png" alt="Preview">
       <div class="card-title">Player 18 Rohit Sharma</div>
     </div>
     
-    <div class="card" data-name="19stevesmith" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/19 Steve Smith.png" alt="Preview" onclick="openViewer('full_pngs/19 Steve Smith.png', this)">
+    <div class="card" data-name="19stevesmith" data-number="19" onclick="openViewer('full_pngs/19 Steve Smith.png', this)">
+      <img src="full_pngs/19 Steve Smith.png" alt="Preview">
       <div class="card-title">Player 19 Steve Smith</div>
     </div>
     
-    <div class="card" data-name="20alexhales" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/20 Alex Hales.png" alt="Preview" onclick="openViewer('full_pngs/20 Alex Hales.png', this)">
+    <div class="card" data-name="20alexhales" data-number="20" onclick="openViewer('full_pngs/20 Alex Hales.png', this)">
+      <img src="full_pngs/20 Alex Hales.png" alt="Preview">
       <div class="card-title">Player 20 Alex Hales</div>
     </div>
     
-    <div class="card" data-name="21jonnybairstow" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/21 Jonny Bairstow.png" alt="Preview" onclick="openViewer('full_pngs/21 Jonny Bairstow.png', this)">
+    <div class="card" data-name="21jonnybairstow" data-number="21" onclick="openViewer('full_pngs/21 Jonny Bairstow.png', this)">
+      <img src="full_pngs/21 Jonny Bairstow.png" alt="Preview">
       <div class="card-title">Player 21 Jonny Bairstow</div>
     </div>
     
-    <div class="card" data-name="22kanewilliamson" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/22 Kane Williamson.png" alt="Preview" onclick="openViewer('full_pngs/22 Kane Williamson.png', this)">
+    <div class="card" data-name="22kanewilliamson" data-number="22" onclick="openViewer('full_pngs/22 Kane Williamson.png', this)">
+      <img src="full_pngs/22 Kane Williamson.png" alt="Preview">
       <div class="card-title">Player 22 Kane Williamson</div>
     </div>
     
-    <div class="card" data-name="23rahultripathi" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/23 Rahul Tripathi.png" alt="Preview" onclick="openViewer('full_pngs/23 Rahul Tripathi.png', this)">
+    <div class="card" data-name="23rahultripathi" data-number="23" onclick="openViewer('full_pngs/23 Rahul Tripathi.png', this)">
+      <img src="full_pngs/23 Rahul Tripathi.png" alt="Preview">
       <div class="card-title">Player 23 Rahul Tripathi</div>
     </div>
     
-    <div class="card" data-name="24shaihope" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/24 Shai Hope.png" alt="Preview" onclick="openViewer('full_pngs/24 Shai Hope.png', this)">
+    <div class="card" data-name="24shaihope" data-number="24" onclick="openViewer('full_pngs/24 Shai Hope.png', this)">
+      <img src="full_pngs/24 Shai Hope.png" alt="Preview">
       <div class="card-title">Player 24 Shai Hope</div>
     </div>
     
-    <div class="card" data-name="25rovmanpowell" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/25 Rovman Powell.png" alt="Preview" onclick="openViewer('full_pngs/25 Rovman Powell.png', this)">
+    <div class="card" data-name="25rovmanpowell" data-number="25" onclick="openViewer('full_pngs/25 Rovman Powell.png', this)">
+      <img src="full_pngs/25 Rovman Powell.png" alt="Preview">
       <div class="card-title">Player 25 Rovman Powell</div>
     </div>
     
-    <div class="card" data-name="26nehalwadhera" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/26 Nehal Wadhera.png" alt="Preview" onclick="openViewer('full_pngs/26 Nehal Wadhera.png', this)">
+    <div class="card" data-name="26nehalwadhera" data-number="26" onclick="openViewer('full_pngs/26 Nehal Wadhera.png', this)">
+      <img src="full_pngs/26 Nehal Wadhera.png" alt="Preview">
       <div class="card-title">Player 26 Nehal Wadhera</div>
     </div>
     
-    <div class="card" data-name="27rileerossouw" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/27 Rilee Rossouw.png" alt="Preview" onclick="openViewer('full_pngs/27 Rilee Rossouw.png', this)">
+    <div class="card" data-name="27rileerossouw" data-number="27" onclick="openViewer('full_pngs/27 Rilee Rossouw.png', this)">
+      <img src="full_pngs/27 Rilee Rossouw.png" alt="Preview">
       <div class="card-title">Player 27 Rilee Rossouw</div>
     </div>
     
-    <div class="card" data-name="28joeroot" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/28 Joe Root.png" alt="Preview" onclick="openViewer('full_pngs/28 Joe Root.png', this)">
+    <div class="card" data-name="28joeroot" data-number="28" onclick="openViewer('full_pngs/28 Joe Root.png', this)">
+      <img src="full_pngs/28 Joe Root.png" alt="Preview">
       <div class="card-title">Player 28 Joe Root</div>
     </div>
     
-    <div class="card" data-name="29manishpandey" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/29 Manish Pandey.png" alt="Preview" onclick="openViewer('full_pngs/29 Manish Pandey.png', this)">
+    <div class="card" data-name="29manishpandey" data-number="29" onclick="openViewer('full_pngs/29 Manish Pandey.png', this)">
+      <img src="full_pngs/29 Manish Pandey.png" alt="Preview">
       <div class="card-title">Player 29 Manish Pandey</div>
     </div>
     
-    <div class="card" data-name="30mayankagarwal" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/30 Mayank Agarwal.png" alt="Preview" onclick="openViewer('full_pngs/30 Mayank Agarwal.png', this)">
+    <div class="card" data-name="30mayankagarwal" data-number="30" onclick="openViewer('full_pngs/30 Mayank Agarwal.png', this)">
+      <img src="full_pngs/30 Mayank Agarwal.png" alt="Preview">
       <div class="card-title">Player 30 Mayank Agarwal</div>
     </div>
     
-    <div class="card" data-name="31sarfarazkhan" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/31 Sarfaraz Khan.png" alt="Preview" onclick="openViewer('full_pngs/31 Sarfaraz Khan.png', this)">
+    <div class="card" data-name="31sarfarazkhan" data-number="31" onclick="openViewer('full_pngs/31 Sarfaraz Khan.png', this)">
+      <img src="full_pngs/31 Sarfaraz Khan.png" alt="Preview">
       <div class="card-title">Player 31 Sarfaraz Khan</div>
     </div>
     
-    <div class="card" data-name="32nitishrana" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/32 Nitish Rana.png" alt="Preview" onclick="openViewer('full_pngs/32 Nitish Rana.png', this)">
+    <div class="card" data-name="32nitishrana" data-number="32" onclick="openViewer('full_pngs/32 Nitish Rana.png', this)">
+      <img src="full_pngs/32 Nitish Rana.png" alt="Preview">
       <div class="card-title">Player 32 Nitish Rana</div>
     </div>
     
-    <div class="card" data-name="33rachinravindra" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/33 Rachin Ravindra.png" alt="Preview" onclick="openViewer('full_pngs/33 Rachin Ravindra.png', this)">
+    <div class="card" data-name="33rachinravindra" data-number="33" onclick="openViewer('full_pngs/33 Rachin Ravindra.png', this)">
+      <img src="full_pngs/33 Rachin Ravindra.png" alt="Preview">
       <div class="card-title">Player 33 Rachin Ravindra</div>
     </div>
     
-    <div class="card" data-name="34colinmunro" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/34 Colin Munro.png" alt="Preview" onclick="openViewer('full_pngs/34 Colin Munro.png', this)">
+    <div class="card" data-name="34colinmunro" data-number="34" onclick="openViewer('full_pngs/34 Colin Munro.png', this)">
+      <img src="full_pngs/34 Colin Munro.png" alt="Preview">
       <div class="card-title">Player 34 Colin Munro</div>
     </div>
     
-    <div class="card" data-name="35karunnair" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/35 Karun Nair.png" alt="Preview" onclick="openViewer('full_pngs/35 Karun Nair.png', this)">
+    <div class="card" data-name="35karunnair" data-number="35" onclick="openViewer('full_pngs/35 Karun Nair.png', this)">
+      <img src="full_pngs/35 Karun Nair.png" alt="Preview">
       <div class="card-title">Player 35 Karun Nair</div>
     </div>
     
-    <div class="card" data-name="36ajinkyarahane" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/36 Ajinkya Rahane.png" alt="Preview" onclick="openViewer('full_pngs/36 Ajinkya Rahane.png', this)">
+    <div class="card" data-name="36ajinkyarahane" data-number="36" onclick="openViewer('full_pngs/36 Ajinkya Rahane.png', this)">
+      <img src="full_pngs/36 Ajinkya Rahane.png" alt="Preview">
       <div class="card-title">Player 36 Ajinkya Rahane</div>
     </div>
     
-    <div class="card" data-name="37mananvohra" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/37 Manan Vohra.png" alt="Preview" onclick="openViewer('full_pngs/37 Manan Vohra.png', this)">
+    <div class="card" data-name="37mananvohra" data-number="37" onclick="openViewer('full_pngs/37 Manan Vohra.png', this)">
+      <img src="full_pngs/37 Manan Vohra.png" alt="Preview">
       <div class="card-title">Player 37 Manan Vohra</div>
     </div>
     
-    <div class="card" data-name="38evinlewis" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/38 Evin Lewis.png" alt="Preview" onclick="openViewer('full_pngs/38 Evin Lewis.png', this)">
+    <div class="card" data-name="38evinlewis" data-number="38" onclick="openViewer('full_pngs/38 Evin Lewis.png', this)">
+      <img src="full_pngs/38 Evin Lewis.png" alt="Preview">
       <div class="card-title">Player 38 Evin Lewis</div>
     </div>
     
-    <div class="card" data-name="39anmolpreetsingh" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/39 Anmolpreet Singh.png" alt="Preview" onclick="openViewer('full_pngs/39 Anmolpreet Singh.png', this)">
+    <div class="card" data-name="39anmolpreetsingh" data-number="39" onclick="openViewer('full_pngs/39 Anmolpreet Singh.png', this)">
+      <img src="full_pngs/39 Anmolpreet Singh.png" alt="Preview">
       <div class="card-title">Player 39 Anmolpreet Singh</div>
     </div>
     
-    <div class="card" data-name="40angkrishraghuvanshi" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/40 Angkrish Raghuvanshi.png" alt="Preview" onclick="openViewer('full_pngs/40 Angkrish Raghuvanshi.png', this)">
+    <div class="card" data-name="40angkrishraghuvanshi" data-number="40" onclick="openViewer('full_pngs/40 Angkrish Raghuvanshi.png', this)">
+      <img src="full_pngs/40 Angkrish Raghuvanshi.png" alt="Preview">
       <div class="card-title">Player 40 Angkrish Raghuvanshi</div>
     </div>
     
-    <div class="card" data-name="41rashidkhan" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/41 Rashid Khan.png" alt="Preview" onclick="openViewer('full_pngs/41 Rashid Khan.png', this)">
+    <div class="card" data-name="41rashidkhan" data-number="41" onclick="openViewer('full_pngs/41 Rashid Khan.png', this)">
+      <img src="full_pngs/41 Rashid Khan.png" alt="Preview">
       <div class="card-title">Player 41 Rashid Khan</div>
     </div>
     
-    <div class="card" data-name="42jaspritbumrah" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/42 Jasprit Bumrah.png" alt="Preview" onclick="openViewer('full_pngs/42 Jasprit Bumrah.png', this)">
+    <div class="card" data-name="42jaspritbumrah" data-number="42" onclick="openViewer('full_pngs/42 Jasprit Bumrah.png', this)">
+      <img src="full_pngs/42 Jasprit Bumrah.png" alt="Preview">
       <div class="card-title">Player 42 Jasprit Bumrah</div>
     </div>
     
-    <div class="card" data-name="43jofraarcher" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/43 Jofra Archer.png" alt="Preview" onclick="openViewer('full_pngs/43 Jofra Archer.png', this)">
+    <div class="card" data-name="43jofraarcher" data-number="43" onclick="openViewer('full_pngs/43 Jofra Archer.png', this)">
+      <img src="full_pngs/43 Jofra Archer.png" alt="Preview">
       <div class="card-title">Player 43 Jofra Archer</div>
     </div>
     
-    <div class="card" data-name="44patcummins" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/44 Pat Cummins.png" alt="Preview" onclick="openViewer('full_pngs/44 Pat Cummins.png', this)">
+    <div class="card" data-name="44patcummins" data-number="44" onclick="openViewer('full_pngs/44 Pat Cummins.png', this)">
+      <img src="full_pngs/44 Pat Cummins.png" alt="Preview">
       <div class="card-title">Player 44 Pat Cummins</div>
     </div>
     
-    <div class="card" data-name="45mitchellstarc" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/45 Mitchell Starc.png" alt="Preview" onclick="openViewer('full_pngs/45 Mitchell Starc.png', this)">
+    <div class="card" data-name="45mitchellstarc" data-number="45" onclick="openViewer('full_pngs/45 Mitchell Starc.png', this)">
+      <img src="full_pngs/45 Mitchell Starc.png" alt="Preview">
       <div class="card-title">Player 45 Mitchell Starc</div>
     </div>
     
-    <div class="card" data-name="46yuzvendrachahal" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/46 Yuzvendra Chahal.png" alt="Preview" onclick="openViewer('full_pngs/46 Yuzvendra Chahal.png', this)">
+    <div class="card" data-name="46yuzvendrachahal" data-number="46" onclick="openViewer('full_pngs/46 Yuzvendra Chahal.png', this)">
+      <img src="full_pngs/46 Yuzvendra Chahal.png" alt="Preview">
       <div class="card-title">Player 46 Yuzvendra Chahal</div>
     </div>
     
-    <div class="card" data-name="47kagisorabada" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/47 Kagiso Rabada.png" alt="Preview" onclick="openViewer('full_pngs/47 Kagiso Rabada.png', this)">
+    <div class="card" data-name="47kagisorabada" data-number="47" onclick="openViewer('full_pngs/47 Kagiso Rabada.png', this)">
+      <img src="full_pngs/47 Kagiso Rabada.png" alt="Preview">
       <div class="card-title">Player 47 Kagiso Rabada</div>
     </div>
     
-    <div class="card" data-name="48arshdeepsingh" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/48 Arshdeep Singh.png" alt="Preview" onclick="openViewer('full_pngs/48 Arshdeep Singh.png', this)">
+    <div class="card" data-name="48arshdeepsingh" data-number="48" onclick="openViewer('full_pngs/48 Arshdeep Singh.png', this)">
+      <img src="full_pngs/48 Arshdeep Singh.png" alt="Preview">
       <div class="card-title">Player 48 Arshdeep Singh</div>
     </div>
     
-    <div class="card" data-name="49trentboult" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/49 Trent Boult.png" alt="Preview" onclick="openViewer('full_pngs/49 Trent Boult.png', this)">
+    <div class="card" data-name="49trentboult" data-number="49" onclick="openViewer('full_pngs/49 Trent Boult.png', this)">
+      <img src="full_pngs/49 Trent Boult.png" alt="Preview">
       <div class="card-title">Player 49 Trent Boult</div>
     </div>
     
-    <div class="card" data-name="50mohammedshami" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/50 Mohammed Shami.png" alt="Preview" onclick="openViewer('full_pngs/50 Mohammed Shami.png', this)">
+    <div class="card" data-name="50mohammedshami" data-number="50" onclick="openViewer('full_pngs/50 Mohammed Shami.png', this)">
+      <img src="full_pngs/50 Mohammed Shami.png" alt="Preview">
       <div class="card-title">Player 50 Mohammed Shami</div>
     </div>
     
-    <div class="card" data-name="51bhuvneshwarkumar" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/51 Bhuvneshwar Kumar.png" alt="Preview" onclick="openViewer('full_pngs/51 Bhuvneshwar Kumar.png', this)">
+    <div class="card" data-name="51bhuvneshwarkumar" data-number="51" onclick="openViewer('full_pngs/51 Bhuvneshwar Kumar.png', this)">
+      <img src="full_pngs/51 Bhuvneshwar Kumar.png" alt="Preview">
       <div class="card-title">Player 51 Bhuvneshwar Kumar</div>
     </div>
     
-    <div class="card" data-name="52deepakchahar" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/52 Deepak Chahar.png" alt="Preview" onclick="openViewer('full_pngs/52 Deepak Chahar.png', this)">
+    <div class="card" data-name="52deepakchahar" data-number="52" onclick="openViewer('full_pngs/52 Deepak Chahar.png', this)">
+      <img src="full_pngs/52 Deepak Chahar.png" alt="Preview">
       <div class="card-title">Player 52 Deepak Chahar</div>
     </div>
     
-    <div class="card" data-name="53ravibishnoi" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/53 Ravi Bishnoi.png" alt="Preview" onclick="openViewer('full_pngs/53 Ravi Bishnoi.png', this)">
+    <div class="card" data-name="53ravibishnoi" data-number="53" onclick="openViewer('full_pngs/53 Ravi Bishnoi.png', this)">
+      <img src="full_pngs/53 Ravi Bishnoi.png" alt="Preview">
       <div class="card-title">Player 53 Ravi Bishnoi</div>
     </div>
     
-    <div class="card" data-name="54joshhazlewood" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/54 Josh Hazlewood.png" alt="Preview" onclick="openViewer('full_pngs/54 Josh Hazlewood.png', this)">
+    <div class="card" data-name="54joshhazlewood" data-number="54" onclick="openViewer('full_pngs/54 Josh Hazlewood.png', this)">
+      <img src="full_pngs/54 Josh Hazlewood.png" alt="Preview">
       <div class="card-title">Player 54 Josh Hazlewood</div>
     </div>
     
-    <div class="card" data-name="55markwood" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/55 Mark Wood.png" alt="Preview" onclick="openViewer('full_pngs/55 Mark Wood.png', this)">
+    <div class="card" data-name="55markwood" data-number="55" onclick="openViewer('full_pngs/55 Mark Wood.png', this)">
+      <img src="full_pngs/55 Mark Wood.png" alt="Preview">
       <div class="card-title">Player 55 Mark Wood</div>
     </div>
     
-    <div class="card" data-name="56aveshkhan" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/56 Avesh Khan.png" alt="Preview" onclick="openViewer('full_pngs/56 Avesh Khan.png', this)">
+    <div class="card" data-name="56aveshkhan" data-number="56" onclick="openViewer('full_pngs/56 Avesh Khan.png', this)">
+      <img src="full_pngs/56 Avesh Khan.png" alt="Preview">
       <div class="card-title">Player 56 Avesh Khan</div>
     </div>
     
-    <div class="card" data-name="57kuldeepyadav" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/57 Kuldeep Yadav.png" alt="Preview" onclick="openViewer('full_pngs/57 Kuldeep Yadav.png', this)">
+    <div class="card" data-name="57kuldeepyadav" data-number="57" onclick="openViewer('full_pngs/57 Kuldeep Yadav.png', this)">
+      <img src="full_pngs/57 Kuldeep Yadav.png" alt="Preview">
       <div class="card-title">Player 57 Kuldeep Yadav</div>
     </div>
     
-    <div class="card" data-name="58umranmalik" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/58 Umran Malik.png" alt="Preview" onclick="openViewer('full_pngs/58 Umran Malik.png', this)">
+    <div class="card" data-name="58umranmalik" data-number="58" onclick="openViewer('full_pngs/58 Umran Malik.png', this)">
+      <img src="full_pngs/58 Umran Malik.png" alt="Preview">
       <div class="card-title">Player 58 Umran Malik</div>
     </div>
     
-    <div class="card" data-name="59shardulthakur" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/59 Shardul Thakur.png" alt="Preview" onclick="openViewer('full_pngs/59 Shardul Thakur.png', this)">
+    <div class="card" data-name="59shardulthakur" data-number="59" onclick="openViewer('full_pngs/59 Shardul Thakur.png', this)">
+      <img src="full_pngs/59 Shardul Thakur.png" alt="Preview">
       <div class="card-title">Player 59 Shardul Thakur</div>
     </div>
     
-    <div class="card" data-name="60tnatarajan" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/60 T Natarajan.png" alt="Preview" onclick="openViewer('full_pngs/60 T Natarajan.png', this)">
+    <div class="card" data-name="60tnatarajan" data-number="60" onclick="openViewer('full_pngs/60 T Natarajan.png', this)">
+      <img src="full_pngs/60 T Natarajan.png" alt="Preview">
       <div class="card-title">Player 60 T Natarajan</div>
     </div>
     
-    <div class="card" data-name="61maheeshtheekshana" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/61 Maheesh Theekshana.png" alt="Preview" onclick="openViewer('full_pngs/61 Maheesh Theekshana.png', this)">
+    <div class="card" data-name="61maheeshtheekshana" data-number="61" onclick="openViewer('full_pngs/61 Maheesh Theekshana.png', this)">
+      <img src="full_pngs/61 Maheesh Theekshana.png" alt="Preview">
       <div class="card-title">Player 61 Maheesh Theekshana</div>
     </div>
     
-    <div class="card" data-name="62adamzampa" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/62 Adam Zampa.png" alt="Preview" onclick="openViewer('full_pngs/62 Adam Zampa.png', this)">
+    <div class="card" data-name="62adamzampa" data-number="62" onclick="openViewer('full_pngs/62 Adam Zampa.png', this)">
+      <img src="full_pngs/62 Adam Zampa.png" alt="Preview">
       <div class="card-title">Player 62 Adam Zampa</div>
     </div>
     
-    <div class="card" data-name="63mohammadsiraj" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/63 Mohammad Siraj.png" alt="Preview" onclick="openViewer('full_pngs/63 Mohammad Siraj.png', this)">
+    <div class="card" data-name="63mohammadsiraj" data-number="63" onclick="openViewer('full_pngs/63 Mohammad Siraj.png', this)">
+      <img src="full_pngs/63 Mohammad Siraj.png" alt="Preview">
       <div class="card-title">Player 63 Mohammad Siraj</div>
     </div>
     
-    <div class="card" data-name="64varunchakravarthy" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/64 Varun Chakravarthy.png" alt="Preview" onclick="openViewer('full_pngs/64 Varun Chakravarthy.png', this)">
+    <div class="card" data-name="64varunchakravarthy" data-number="64" onclick="openViewer('full_pngs/64 Varun Chakravarthy.png', this)">
+      <img src="full_pngs/64 Varun Chakravarthy.png" alt="Preview">
       <div class="card-title">Player 64 Varun Chakravarthy</div>
     </div>
     
-    <div class="card" data-name="65sandeepsharma" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/65 Sandeep Sharma.png" alt="Preview" onclick="openViewer('full_pngs/65 Sandeep Sharma.png', this)">
+    <div class="card" data-name="65sandeepsharma" data-number="65" onclick="openViewer('full_pngs/65 Sandeep Sharma.png', this)">
+      <img src="full_pngs/65 Sandeep Sharma.png" alt="Preview">
       <div class="card-title">Player 65 Sandeep Sharma</div>
     </div>
     
-    <div class="card" data-name="66umeshyadav" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/66 Umesh Yadav.png" alt="Preview" onclick="openViewer('full_pngs/66 Umesh Yadav.png', this)">
+    <div class="card" data-name="66umeshyadav" data-number="66" onclick="openViewer('full_pngs/66 Umesh Yadav.png', this)">
+      <img src="full_pngs/66 Umesh Yadav.png" alt="Preview">
       <div class="card-title">Player 66 Umesh Yadav</div>
     </div>
     
-    <div class="card" data-name="67jaydevunadkat" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/67 Jaydev Unadkat.png" alt="Preview" onclick="openViewer('full_pngs/67 Jaydev Unadkat.png', this)">
+    <div class="card" data-name="67jaydevunadkat" data-number="67" onclick="openViewer('full_pngs/67 Jaydev Unadkat.png', this)">
+      <img src="full_pngs/67 Jaydev Unadkat.png" alt="Preview">
       <div class="card-title">Player 67 Jaydev Unadkat</div>
     </div>
     
-    <div class="card" data-name="68mayankmarkande" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/68 Mayank Markande.png" alt="Preview" onclick="openViewer('full_pngs/68 Mayank Markande.png', this)">
+    <div class="card" data-name="68mayankmarkande" data-number="68" onclick="openViewer('full_pngs/68 Mayank Markande.png', this)">
+      <img src="full_pngs/68 Mayank Markande.png" alt="Preview">
       <div class="card-title">Player 68 Mayank Markande</div>
     </div>
     
-    <div class="card" data-name="69prasidhkrishna" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/69 Prasidh Krishna.png" alt="Preview" onclick="openViewer('full_pngs/69 Prasidh Krishna.png', this)">
+    <div class="card" data-name="69prasidhkrishna" data-number="69" onclick="openViewer('full_pngs/69 Prasidh Krishna.png', this)">
+      <img src="full_pngs/69 Prasidh Krishna.png" alt="Preview">
       <div class="card-title">Player 69 Prasidh Krishna</div>
     </div>
     
-    <div class="card" data-name="70chetansakariya" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/70 Chetan Sakariya.png" alt="Preview" onclick="openViewer('full_pngs/70 Chetan Sakariya.png', this)">
+    <div class="card" data-name="70chetansakariya" data-number="70" onclick="openViewer('full_pngs/70 Chetan Sakariya.png', this)">
+      <img src="full_pngs/70 Chetan Sakariya.png" alt="Preview">
       <div class="card-title">Player 70 Chetan Sakariya</div>
     </div>
     
-    <div class="card" data-name="71harshalpatel" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/71 Harshal Patel.png" alt="Preview" onclick="openViewer('full_pngs/71 Harshal Patel.png', this)">
+    <div class="card" data-name="71harshalpatel" data-number="71" onclick="openViewer('full_pngs/71 Harshal Patel.png', this)">
+      <img src="full_pngs/71 Harshal Patel.png" alt="Preview">
       <div class="card-title">Player 71 Harshal Patel</div>
     </div>
     
-    <div class="card" data-name="72mukeshkumar" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/72 Mukesh Kumar.png" alt="Preview" onclick="openViewer('full_pngs/72 Mukesh Kumar.png', this)">
+    <div class="card" data-name="72mukeshkumar" data-number="72" onclick="openViewer('full_pngs/72 Mukesh Kumar.png', this)">
+      <img src="full_pngs/72 Mukesh Kumar.png" alt="Preview">
       <div class="card-title">Player 72 Mukesh Kumar</div>
     </div>
     
-    <div class="card" data-name="73rsaikishore" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/73 R Sai Kishore.png" alt="Preview" onclick="openViewer('full_pngs/73 R Sai Kishore.png', this)">
+    <div class="card" data-name="73rsaikishore" data-number="73" onclick="openViewer('full_pngs/73 R Sai Kishore.png', this)">
+      <img src="full_pngs/73 R Sai Kishore.png" alt="Preview">
       <div class="card-title">Player 73 R Sai Kishore</div>
     </div>
     
-    <div class="card" data-name="74khaleelahmed" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/74 Khaleel Ahmed.png" alt="Preview" onclick="openViewer('full_pngs/74 Khaleel Ahmed.png', this)">
+    <div class="card" data-name="74khaleelahmed" data-number="74" onclick="openViewer('full_pngs/74 Khaleel Ahmed.png', this)">
+      <img src="full_pngs/74 Khaleel Ahmed.png" alt="Preview">
       <div class="card-title">Player 74 Khaleel Ahmed</div>
     </div>
     
-    <div class="card" data-name="75yashdayal" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/75 Yash Dayal.png" alt="Preview" onclick="openViewer('full_pngs/75 Yash Dayal.png', this)">
+    <div class="card" data-name="75yashdayal" data-number="75" onclick="openViewer('full_pngs/75 Yash Dayal.png', this)">
+      <img src="full_pngs/75 Yash Dayal.png" alt="Preview">
       <div class="card-title">Player 75 Yash Dayal</div>
     </div>
     
-    <div class="card" data-name="76mohsinkhan" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/76 Mohsin Khan.png" alt="Preview" onclick="openViewer('full_pngs/76 Mohsin Khan.png', this)">
+    <div class="card" data-name="76mohsinkhan" data-number="76" onclick="openViewer('full_pngs/76 Mohsin Khan.png', this)">
+      <img src="full_pngs/76 Mohsin Khan.png" alt="Preview">
       <div class="card-title">Player 76 Mohsin Khan</div>
     </div>
     
-    <div class="card" data-name="77shamsmulani" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/77 Shams Mulani.png" alt="Preview" onclick="openViewer('full_pngs/77 Shams Mulani.png', this)">
+    <div class="card" data-name="77shamsmulani" data-number="77" onclick="openViewer('full_pngs/77 Shams Mulani.png', this)">
+      <img src="full_pngs/77 Shams Mulani.png" alt="Preview">
       <div class="card-title">Player 77 Shams Mulani</div>
     </div>
     
-    <div class="card" data-name="78matheeshapathirana" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/78 Matheesha Pathirana.png" alt="Preview" onclick="openViewer('full_pngs/78 Matheesha Pathirana.png', this)">
+    <div class="card" data-name="78matheeshapathirana" data-number="78" onclick="openViewer('full_pngs/78 Matheesha Pathirana.png', this)">
+      <img src="full_pngs/78 Matheesha Pathirana.png" alt="Preview">
       <div class="card-title">Player 78 Matheesha Pathirana</div>
     </div>
     
-    <div class="card" data-name="79rajvardhanhangargekar" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/79 Rajvardhan Hangargekar.png" alt="Preview" onclick="openViewer('full_pngs/79 Rajvardhan Hangargekar.png', this)">
+    <div class="card" data-name="79rajvardhanhangargekar" data-number="79" onclick="openViewer('full_pngs/79 Rajvardhan Hangargekar.png', this)">
+      <img src="full_pngs/79 Rajvardhan Hangargekar.png" alt="Preview">
       <div class="card-title">Player 79 Rajvardhan Hangargekar</div>
     </div>
     
-    <div class="card" data-name="80tushardeshpande" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/80 Tushar Deshpande.png" alt="Preview" onclick="openViewer('full_pngs/80 Tushar Deshpande.png', this)">
+    <div class="card" data-name="80tushardeshpande" data-number="80" onclick="openViewer('full_pngs/80 Tushar Deshpande.png', this)">
+      <img src="full_pngs/80 Tushar Deshpande.png" alt="Preview">
       <div class="card-title">Player 80 Tushar Deshpande</div>
     </div>
     
-    <div class="card" data-name="81hardikpandya" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/81 Hardik Pandya.png" alt="Preview" onclick="openViewer('full_pngs/81 Hardik Pandya.png', this)">
+    <div class="card" data-name="81hardikpandya" data-number="81" onclick="openViewer('full_pngs/81 Hardik Pandya.png', this)">
+      <img src="full_pngs/81 Hardik Pandya.png" alt="Preview">
       <div class="card-title">Player 81 Hardik Pandya</div>
     </div>
     
-    <div class="card" data-name="82andrerussell" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/82 Andre Russell.png" alt="Preview" onclick="openViewer('full_pngs/82 Andre Russell.png', this)">
+    <div class="card" data-name="82andrerussell" data-number="82" onclick="openViewer('full_pngs/82 Andre Russell.png', this)">
+      <img src="full_pngs/82 Andre Russell.png" alt="Preview">
       <div class="card-title">Player 82 Andre Russell</div>
     </div>
     
-    <div class="card" data-name="83benstokes" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/83 Ben Stokes.png" alt="Preview" onclick="openViewer('full_pngs/83 Ben Stokes.png', this)">
+    <div class="card" data-name="83benstokes" data-number="83" onclick="openViewer('full_pngs/83 Ben Stokes.png', this)">
+      <img src="full_pngs/83 Ben Stokes.png" alt="Preview">
       <div class="card-title">Player 83 Ben Stokes</div>
     </div>
     
-    <div class="card" data-name="84ravindrajadeja" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/84 Ravindra Jadeja.png" alt="Preview" onclick="openViewer('full_pngs/84 Ravindra Jadeja.png', this)">
+    <div class="card" data-name="84ravindrajadeja" data-number="84" onclick="openViewer('full_pngs/84 Ravindra Jadeja.png', this)">
+      <img src="full_pngs/84 Ravindra Jadeja.png" alt="Preview">
       <div class="card-title">Player 84 Ravindra Jadeja</div>
     </div>
     
-    <div class="card" data-name="85glennmaxwell" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/85 Glenn Maxwell.png" alt="Preview" onclick="openViewer('full_pngs/85 Glenn Maxwell.png', this)">
+    <div class="card" data-name="85glennmaxwell" data-number="85" onclick="openViewer('full_pngs/85 Glenn Maxwell.png', this)">
+      <img src="full_pngs/85 Glenn Maxwell.png" alt="Preview">
       <div class="card-title">Player 85 Glenn Maxwell</div>
     </div>
     
-    <div class="card" data-name="86marcusstoinis" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/86 Marcus Stoinis.png" alt="Preview" onclick="openViewer('full_pngs/86 Marcus Stoinis.png', this)">
+    <div class="card" data-name="86marcusstoinis" data-number="86" onclick="openViewer('full_pngs/86 Marcus Stoinis.png', this)">
+      <img src="full_pngs/86 Marcus Stoinis.png" alt="Preview">
       <div class="card-title">Player 86 Marcus Stoinis</div>
     </div>
     
-    <div class="card" data-name="87liamlivingstone" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/87 Liam Livingstone.png" alt="Preview" onclick="openViewer('full_pngs/87 Liam Livingstone.png', this)">
+    <div class="card" data-name="87liamlivingstone" data-number="87" onclick="openViewer('full_pngs/87 Liam Livingstone.png', this)">
+      <img src="full_pngs/87 Liam Livingstone.png" alt="Preview">
       <div class="card-title">Player 87 Liam Livingstone</div>
     </div>
     
-    <div class="card" data-name="88shivamdube" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/88 Shivam Dube.png" alt="Preview" onclick="openViewer('full_pngs/88 Shivam Dube.png', this)">
+    <div class="card" data-name="88shivamdube" data-number="88" onclick="openViewer('full_pngs/88 Shivam Dube.png', this)">
+      <img src="full_pngs/88 Shivam Dube.png" alt="Preview">
       <div class="card-title">Player 88 Shivam Dube</div>
     </div>
     
-    <div class="card" data-name="89washingtonsundar" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/89 Washington Sundar.png" alt="Preview" onclick="openViewer('full_pngs/89 Washington Sundar.png', this)">
+    <div class="card" data-name="89washingtonsundar" data-number="89" onclick="openViewer('full_pngs/89 Washington Sundar.png', this)">
+      <img src="full_pngs/89 Washington Sundar.png" alt="Preview">
       <div class="card-title">Player 89 Washington Sundar</div>
     </div>
     
-    <div class="card" data-name="90waninduhasaranga" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/90 Wanindu Hasaranga.png" alt="Preview" onclick="openViewer('full_pngs/90 Wanindu Hasaranga.png', this)">
+    <div class="card" data-name="90waninduhasaranga" data-number="90" onclick="openViewer('full_pngs/90 Wanindu Hasaranga.png', this)">
+      <img src="full_pngs/90 Wanindu Hasaranga.png" alt="Preview">
       <div class="card-title">Player 90 Wanindu Hasaranga</div>
     </div>
     
-    <div class="card" data-name="91samcurran" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/91 Sam Curran.png" alt="Preview" onclick="openViewer('full_pngs/91 Sam Curran.png', this)">
+    <div class="card" data-name="91samcurran" data-number="91" onclick="openViewer('full_pngs/91 Sam Curran.png', this)">
+      <img src="full_pngs/91 Sam Curran.png" alt="Preview">
       <div class="card-title">Player 91 Sam Curran</div>
     </div>
     
-    <div class="card" data-name="92camerongreen" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/92 Cameron Green.png" alt="Preview" onclick="openViewer('full_pngs/92 Cameron Green.png', this)">
+    <div class="card" data-name="92camerongreen" data-number="92" onclick="openViewer('full_pngs/92 Cameron Green.png', this)">
+      <img src="full_pngs/92 Cameron Green.png" alt="Preview">
       <div class="card-title">Player 92 Cameron Green</div>
     </div>
     
-    <div class="card" data-name="93abhisheksharma" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/93 Abhishek Sharma.png" alt="Preview" onclick="openViewer('full_pngs/93 Abhishek Sharma.png', this)">
+    <div class="card" data-name="93abhisheksharma" data-number="93" onclick="openViewer('full_pngs/93 Abhishek Sharma.png', this)">
+      <img src="full_pngs/93 Abhishek Sharma.png" alt="Preview">
       <div class="card-title">Player 93 Abhishek Sharma</div>
     </div>
     
-    <div class="card" data-name="94shakibalhasan" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/94 Shakib Al Hasan.png" alt="Preview" onclick="openViewer('full_pngs/94 Shakib Al Hasan.png', this)">
+    <div class="card" data-name="94shakibalhasan" data-number="94" onclick="openViewer('full_pngs/94 Shakib Al Hasan.png', this)">
+      <img src="full_pngs/94 Shakib Al Hasan.png" alt="Preview">
       <div class="card-title">Player 94 Shakib Al Hasan</div>
     </div>
     
-    <div class="card" data-name="95moeenali" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/95 Moeen Ali.png" alt="Preview" onclick="openViewer('full_pngs/95 Moeen Ali.png', this)">
+    <div class="card" data-name="95moeenali" data-number="95" onclick="openViewer('full_pngs/95 Moeen Ali.png', this)">
+      <img src="full_pngs/95 Moeen Ali.png" alt="Preview">
       <div class="card-title">Player 95 Moeen Ali</div>
     </div>
     
-    <div class="card" data-name="96axarpatel" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/96 Axar Patel.png" alt="Preview" onclick="openViewer('full_pngs/96 Axar Patel.png', this)">
+    <div class="card" data-name="96axarpatel" data-number="96" onclick="openViewer('full_pngs/96 Axar Patel.png', this)">
+      <img src="full_pngs/96 Axar Patel.png" alt="Preview">
       <div class="card-title">Player 96 Axar Patel</div>
     </div>
     
-    <div class="card" data-name="97riyanparag" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/97 Riyan Parag.png" alt="Preview" onclick="openViewer('full_pngs/97 Riyan Parag.png', this)">
+    <div class="card" data-name="97riyanparag" data-number="97" onclick="openViewer('full_pngs/97 Riyan Parag.png', this)">
+      <img src="full_pngs/97 Riyan Parag.png" alt="Preview">
       <div class="card-title">Player 97 Riyan Parag</div>
     </div>
     
-    <div class="card" data-name="98rahultewatia" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/98 Rahul Tewatia.png" alt="Preview" onclick="openViewer('full_pngs/98 Rahul Tewatia.png', this)">
+    <div class="card" data-name="98rahultewatia" data-number="98" onclick="openViewer('full_pngs/98 Rahul Tewatia.png', this)">
+      <img src="full_pngs/98 Rahul Tewatia.png" alt="Preview">
       <div class="card-title">Player 98 Rahul Tewatia</div>
     </div>
     
-    <div class="card" data-name="99deepakhooda" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/99 Deepak Hooda.png" alt="Preview" onclick="openViewer('full_pngs/99 Deepak Hooda.png', this)">
+    <div class="card" data-name="99deepakhooda" data-number="99" onclick="openViewer('full_pngs/99 Deepak Hooda.png', this)">
+      <img src="full_pngs/99 Deepak Hooda.png" alt="Preview">
       <div class="card-title">Player 99 Deepak Hooda</div>
     </div>
     
-    <div class="card" data-name="100mahipallomror" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/100 Mahipal Lomror.png" alt="Preview" onclick="openViewer('full_pngs/100 Mahipal Lomror.png', this)">
+    <div class="card" data-name="100mahipallomror" data-number="100" onclick="openViewer('full_pngs/100 Mahipal Lomror.png', this)">
+      <img src="full_pngs/100 Mahipal Lomror.png" alt="Preview">
       <div class="card-title">Player 100 Mahipal Lomror</div>
     </div>
     
-    <div class="card" data-name="101venkateshiyer" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/101 Venkatesh Iyer.png" alt="Preview" onclick="openViewer('full_pngs/101 Venkatesh Iyer.png', this)">
+    <div class="card" data-name="101venkateshiyer" data-number="101" onclick="openViewer('full_pngs/101 Venkatesh Iyer.png', this)">
+      <img src="full_pngs/101 Venkatesh Iyer.png" alt="Preview">
       <div class="card-title">Player 101 Venkatesh Iyer</div>
     </div>
     
-    <div class="card" data-name="102krunalpandya" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/102 Krunal Pandya.png" alt="Preview" onclick="openViewer('full_pngs/102 Krunal Pandya.png', this)">
+    <div class="card" data-name="102krunalpandya" data-number="102" onclick="openViewer('full_pngs/102 Krunal Pandya.png', this)">
+      <img src="full_pngs/102 Krunal Pandya.png" alt="Preview">
       <div class="card-title">Player 102 Krunal Pandya</div>
     </div>
     
-    <div class="card" data-name="103rostonchase" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/103 Roston Chase.png" alt="Preview" onclick="openViewer('full_pngs/103 Roston Chase.png', this)">
+    <div class="card" data-name="103rostonchase" data-number="103" onclick="openViewer('full_pngs/103 Roston Chase.png', this)">
+      <img src="full_pngs/103 Roston Chase.png" alt="Preview">
       <div class="card-title">Player 103 Roston Chase</div>
     </div>
     
-    <div class="card" data-name="104dasunshanaka" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/104 Dasun Shanaka.png" alt="Preview" onclick="openViewer('full_pngs/104 Dasun Shanaka.png', this)">
+    <div class="card" data-name="104dasunshanaka" data-number="104" onclick="openViewer('full_pngs/104 Dasun Shanaka.png', this)">
+      <img src="full_pngs/104 Dasun Shanaka.png" alt="Preview">
       <div class="card-title">Player 104 Dasun Shanaka</div>
     </div>
     
-    <div class="card" data-name="105shahbazahmed" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/105 Shahbaz Ahmed.png" alt="Preview" onclick="openViewer('full_pngs/105 Shahbaz Ahmed.png', this)">
+    <div class="card" data-name="105shahbazahmed" data-number="105" onclick="openViewer('full_pngs/105 Shahbaz Ahmed.png', this)">
+      <img src="full_pngs/105 Shahbaz Ahmed.png" alt="Preview">
       <div class="card-title">Player 105 Shahbaz Ahmed</div>
     </div>
     
-    <div class="card" data-name="106rishabhpant" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/106 Rishabh Pant.png" alt="Preview" onclick="openViewer('full_pngs/106 Rishabh Pant.png', this)">
+    <div class="card" data-name="106rishabhpant" data-number="106" onclick="openViewer('full_pngs/106 Rishabh Pant.png', this)">
+      <img src="full_pngs/106 Rishabh Pant.png" alt="Preview">
       <div class="card-title">Player 106 Rishabh Pant</div>
     </div>
     
-    <div class="card" data-name="107ishankishan" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/107 Ishan Kishan.png" alt="Preview" onclick="openViewer('full_pngs/107 Ishan Kishan.png', this)">
+    <div class="card" data-name="107ishankishan" data-number="107" onclick="openViewer('full_pngs/107 Ishan Kishan.png', this)">
+      <img src="full_pngs/107 Ishan Kishan.png" alt="Preview">
       <div class="card-title">Player 107 Ishan Kishan</div>
     </div>
     
-    <div class="card" data-name="108klrahul" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/108 KL Rahul.png" alt="Preview" onclick="openViewer('full_pngs/108 KL Rahul.png', this)">
+    <div class="card" data-name="108klrahul" data-number="108" onclick="openViewer('full_pngs/108 KL Rahul.png', this)">
+      <img src="full_pngs/108 KL Rahul.png" alt="Preview">
       <div class="card-title">Player 108 KL Rahul</div>
     </div>
     
-    <div class="card" data-name="109sanjusamson" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/109 Sanju Samson.png" alt="Preview" onclick="openViewer('full_pngs/109 Sanju Samson.png', this)">
+    <div class="card" data-name="109sanjusamson" data-number="109" onclick="openViewer('full_pngs/109 Sanju Samson.png', this)">
+      <img src="full_pngs/109 Sanju Samson.png" alt="Preview">
       <div class="card-title">Player 109 Sanju Samson</div>
     </div>
     
-    <div class="card" data-name="110quintondekock" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/110 Quinton de Kock.png" alt="Preview" onclick="openViewer('full_pngs/110 Quinton de Kock.png', this)">
+    <div class="card" data-name="110quintondekock" data-number="110" onclick="openViewer('full_pngs/110 Quinton de Kock.png', this)">
+      <img src="full_pngs/110 Quinton de Kock.png" alt="Preview">
       <div class="card-title">Player 110 Quinton de Kock</div>
     </div>
     
-    <div class="card" data-name="111josbuttler" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/111 Jos Buttler.png" alt="Preview" onclick="openViewer('full_pngs/111 Jos Buttler.png', this)">
+    <div class="card" data-name="111josbuttler" data-number="111" onclick="openViewer('full_pngs/111 Jos Buttler.png', this)">
+      <img src="full_pngs/111 Jos Buttler.png" alt="Preview">
       <div class="card-title">Player 111 Jos Buttler</div>
     </div>
     
-    <div class="card" data-name="112nicholaspooran" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/112 Nicholas Pooran.png" alt="Preview" onclick="openViewer('full_pngs/112 Nicholas Pooran.png', this)">
+    <div class="card" data-name="112nicholaspooran" data-number="112" onclick="openViewer('full_pngs/112 Nicholas Pooran.png', this)">
+      <img src="full_pngs/112 Nicholas Pooran.png" alt="Preview">
       <div class="card-title">Player 112 Nicholas Pooran</div>
     </div>
     
-    <div class="card" data-name="113philsalt" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/113 Phil Salt.png" alt="Preview" onclick="openViewer('full_pngs/113 Phil Salt.png', this)">
+    <div class="card" data-name="113philsalt" data-number="113" onclick="openViewer('full_pngs/113 Phil Salt.png', this)">
+      <img src="full_pngs/113 Phil Salt.png" alt="Preview">
       <div class="card-title">Player 113 Phil Salt</div>
     </div>
     
-    <div class="card" data-name="114heinrichklaasen" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/114 Heinrich Klaasen.png" alt="Preview" onclick="openViewer('full_pngs/114 Heinrich Klaasen.png', this)">
+    <div class="card" data-name="114heinrichklaasen" data-number="114" onclick="openViewer('full_pngs/114 Heinrich Klaasen.png', this)">
+      <img src="full_pngs/114 Heinrich Klaasen.png" alt="Preview">
       <div class="card-title">Player 114 Heinrich Klaasen</div>
     </div>
     
-    <div class="card" data-name="115rahmanullahgurbaz" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/115 Rahmanullah Gurbaz.png" alt="Preview" onclick="openViewer('full_pngs/115 Rahmanullah Gurbaz.png', this)">
+    <div class="card" data-name="115rahmanullahgurbaz" data-number="115" onclick="openViewer('full_pngs/115 Rahmanullah Gurbaz.png', this)">
+      <img src="full_pngs/115 Rahmanullah Gurbaz.png" alt="Preview">
       <div class="card-title">Player 115 Rahmanullah Gurbaz</div>
     </div>
     
-    <div class="card" data-name="116msdhoni" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/116 MS Dhoni.png" alt="Preview" onclick="openViewer('full_pngs/116 MS Dhoni.png', this)">
+    <div class="card" data-name="116msdhoni" data-number="116" onclick="openViewer('full_pngs/116 MS Dhoni.png', this)">
+      <img src="full_pngs/116 MS Dhoni.png" alt="Preview">
       <div class="card-title">Player 116 MS Dhoni</div>
     </div>
     
-    <div class="card" data-name="117jiteshsharma" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/117 Jitesh Sharma.png" alt="Preview" onclick="openViewer('full_pngs/117 Jitesh Sharma.png', this)">
+    <div class="card" data-name="117jiteshsharma" data-number="117" onclick="openViewer('full_pngs/117 Jitesh Sharma.png', this)">
+      <img src="full_pngs/117 Jitesh Sharma.png" alt="Preview">
       <div class="card-title">Player 117 Jitesh Sharma</div>
     </div>
     
-    <div class="card" data-name="118prabhsimransingh" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/118 Prabhsimran Singh.png" alt="Preview" onclick="openViewer('full_pngs/118 Prabhsimran Singh.png', this)">
+    <div class="card" data-name="118prabhsimransingh" data-number="118" onclick="openViewer('full_pngs/118 Prabhsimran Singh.png', this)">
+      <img src="full_pngs/118 Prabhsimran Singh.png" alt="Preview">
       <div class="card-title">Player 118 Prabhsimran Singh</div>
     </div>
     
-    <div class="card" data-name="119sherfanerutherford" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/119 Sherfane Rutherford.png" alt="Preview" onclick="openViewer('full_pngs/119 Sherfane Rutherford.png', this)">
+    <div class="card" data-name="119sherfanerutherford" data-number="119" onclick="openViewer('full_pngs/119 Sherfane Rutherford.png', this)">
+      <img src="full_pngs/119 Sherfane Rutherford.png" alt="Preview">
       <div class="card-title">Player 119 Sherfane Rutherford</div>
     </div>
     
-    <div class="card" data-name="120devonconway" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/120 Devon Conway.png" alt="Preview" onclick="openViewer('full_pngs/120 Devon Conway.png', this)">
+    <div class="card" data-name="120devonconway" data-number="120" onclick="openViewer('full_pngs/120 Devon Conway.png', this)">
+      <img src="full_pngs/120 Devon Conway.png" alt="Preview">
       <div class="card-title">Player 120 Devon Conway</div>
     </div>
     
-    <div class="card" data-name="121littondas" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/121 Litton Das.png" alt="Preview" onclick="openViewer('full_pngs/121 Litton Das.png', this)">
+    <div class="card" data-name="121littondas" data-number="121" onclick="openViewer('full_pngs/121 Litton Das.png', this)">
+      <img src="full_pngs/121 Litton Das.png" alt="Preview">
       <div class="card-title">Player 121 Litton Das</div>
     </div>
     
-    <div class="card" data-name="122anujrawat" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/122 Anuj Rawat.png" alt="Preview" onclick="openViewer('full_pngs/122 Anuj Rawat.png', this)">
+    <div class="card" data-name="122anujrawat" data-number="122" onclick="openViewer('full_pngs/122 Anuj Rawat.png', this)">
+      <img src="full_pngs/122 Anuj Rawat.png" alt="Preview">
       <div class="card-title">Player 122 Anuj Rawat</div>
     </div>
     
-    <div class="card" data-name="123dineshkarthik" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/123 Dinesh Karthik.png" alt="Preview" onclick="openViewer('full_pngs/123 Dinesh Karthik.png', this)">
+    <div class="card" data-name="123dineshkarthik" data-number="123" onclick="openViewer('full_pngs/123 Dinesh Karthik.png', this)">
+      <img src="full_pngs/123 Dinesh Karthik.png" alt="Preview">
       <div class="card-title">Player 123 Dinesh Karthik</div>
     </div>
     
-    <div class="card" data-name="124ksbharat" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/124 KS Bharat.png" alt="Preview" onclick="openViewer('full_pngs/124 KS Bharat.png', this)">
+    <div class="card" data-name="124ksbharat" data-number="124" onclick="openViewer('full_pngs/124 KS Bharat.png', this)">
+      <img src="full_pngs/124 KS Bharat.png" alt="Preview">
       <div class="card-title">Player 124 KS Bharat</div>
     </div>
     
-    <div class="card" data-name="125vishnuvinod" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/125 Vishnu Vinod.png" alt="Preview" onclick="openViewer('full_pngs/125 Vishnu Vinod.png', this)">
+    <div class="card" data-name="125vishnuvinod" data-number="125" onclick="openViewer('full_pngs/125 Vishnu Vinod.png', this)">
+      <img src="full_pngs/125 Vishnu Vinod.png" alt="Preview">
       <div class="card-title">Player 125 Vishnu Vinod</div>
     </div>
     
-    <div class="card" data-name="126njagadeesan" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/126 N Jagadeesan.png" alt="Preview" onclick="openViewer('full_pngs/126 N Jagadeesan.png', this)">
+    <div class="card" data-name="126njagadeesan" data-number="126" onclick="openViewer('full_pngs/126 N Jagadeesan.png', this)">
+      <img src="full_pngs/126 N Jagadeesan.png" alt="Preview">
       <div class="card-title">Player 126 N Jagadeesan</div>
     </div>
     
-    <div class="card" data-name="127sambillings" data-visible="true">
-      <label class="toggle-box">
-        <input type="checkbox" checked onchange="toggleCard(this)"> Show
-      </label>
-      <img src="full_pngs/127 Sam Billings.png" alt="Preview" onclick="openViewer('full_pngs/127 Sam Billings.png', this)">
+    <div class="card" data-name="127sambillings" data-number="127" onclick="openViewer('full_pngs/127 Sam Billings.png', this)">
+      <img src="full_pngs/127 Sam Billings.png" alt="Preview">
       <div class="card-title">Player 127 Sam Billings</div>
     </div>
     
   </div>
+  <h2>Sold Players</h2>
+  <div class="grid" id="soldGallery"></div>
 </main>
 
-<div id="viewer" onclick="closeViewer()">
+<div id="viewer">
   <img id="previewImage" src="">
+  <div id="actionButtons">
+    <button id="soldBtn" onclick="markSold()">Sold</button>
+    <button id="unsoldBtn" onclick="nextPlayer()">Unsold</button>
+    <button id="closeBtn" onclick="closeViewer()">Close</button>
+  </div>
 </div>
 
 <script>
-  const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPKsFMoUEvPE3xg_Kw2HxEpbCbkpkvDHTJZbDWgGso6eQCLkgeYx9i2SZbEIPChdOVFeEGnw_H17gr/pub?gid=51346915&single=true&output=csv";
-
   function normalize(str) {
     return str?.toLowerCase().replace(/[^a-z0-9]/g, '');
   }
 
-  function syncWithSheet() {
-    fetch(sheetURL)
-      .then(res => res.text())
-      .then(csv => {
-        const rows = csv.split('\n').slice(1);
-        const updatedStatus = {};
-
-        rows.forEach(row => {
-          const cols = row.split(',');
-          const name = normalize(cols[1]);
-          const status = normalize(cols[8]); // Column 9 = Status
-          updatedStatus[name] = status;
-        });
-
-        document.querySelectorAll('.card').forEach(card => {
-          const name = card.dataset.name;
-          const checkbox = card.querySelector('input[type="checkbox"]');
-          if (updatedStatus[name] && updatedStatus[name] !== 'unsold') {
-            card.dataset.visible = "false";
-            checkbox.checked = false;
-          } else {
-            card.dataset.visible = "true";
-            checkbox.checked = true;
-          }
-        });
-      });
+  // --- Save & Load State (Persistence) ---
+  function saveState() {
+    const state = {
+      active: Array.from(document.querySelectorAll('#gallery .card')).map(card => card.outerHTML),
+      sold: Array.from(document.querySelectorAll('#soldGallery .card')).map(card => card.outerHTML)
+    };
+    localStorage.setItem("playerDashboardState", JSON.stringify(state));
   }
 
-  syncWithSheet();
+  function loadState() {
+    const saved = JSON.parse(localStorage.getItem("playerDashboardState") || "{}");
+    
+    if (saved.active) {
+      document.getElementById('gallery').innerHTML = saved.active.join('');
+      // Reattach event listeners for active cards
+      document.querySelectorAll('#gallery .card').forEach(card => {
+        const img = card.querySelector('img');
+        const src = img.src;
+        card.onclick = function() { openViewer(src, this); };
+      });
+    }
+    
+    if (saved.sold) {
+      document.getElementById('soldGallery').innerHTML = saved.sold.join('');
+      // Reattach event listeners for sold cards
+      document.querySelectorAll('#soldGallery .card .restore-btn').forEach(btn => {
+        btn.onclick = function(e) { restorePlayer(this, e); };
+      });
+    }
+  }
 
   function resetView() {
-    syncWithSheet();
+    localStorage.removeItem("playerDashboardState");
+    location.reload();
   }
 
-  function toggleCard(checkbox) {
-    const card = checkbox.closest('.card');
-    card.dataset.visible = checkbox.checked ? "true" : "false";
-  }
-
-  function openViewer(src, clickedImg) {
+  function openViewer(src, clickedElement) {
+    if (clickedElement.closest('#soldGallery')) return; // Don't open sold players
+    
     const viewer = document.getElementById('viewer');
     const img = document.getElementById('previewImage');
     img.style.opacity = 0;
-    img.style.transform = "scale(0.98)";
     img.src = src;
     viewer.style.display = 'flex';
-    if (viewer.requestFullscreen) viewer.requestFullscreen();
+    
+    // Add class to body to prevent scrolling
+    document.body.classList.add('viewer-open');
+
+    // Fullscreen only for desktop
+    if (!/Mobi|Android/i.test(navigator.userAgent)) {
+      if (viewer.requestFullscreen) {
+        viewer.requestFullscreen().catch(() => {});
+      }
+    }
+
     img.onload = () => {
       img.style.opacity = 1;
-      img.style.transform = "scale(1)";
     };
+
     document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-    clickedImg.closest('.card').classList.add('active');
+    const card = clickedElement.closest('.card');
+    if (card) card.classList.add('active');
   }
 
   function closeViewer() {
     const viewer = document.getElementById('viewer');
     viewer.style.display = 'none';
     document.getElementById('previewImage').src = '';
-    if (document.fullscreenElement) document.exitFullscreen();
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+    
+    // Remove class from body to re-enable scrolling
+    document.body.classList.remove('viewer-open');
+    
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+  }
+
+  function markSold() {
+    const current = document.querySelector('.card.active');
+    if (current && current.parentElement.id === 'gallery') {
+      const currentNumber = parseInt(current.dataset.number);
+      
+      // Create a copy for the sold gallery
+      const soldCard = current.cloneNode(true);
+      soldCard.classList.add('sold');
+      soldCard.onclick = null; // Remove click handler
+      
+      // Add restore button
+      soldCard.innerHTML += '<button class="restore-btn" onclick="restorePlayer(this, event)">Restore</button>';
+      
+      // Add to sold gallery
+      document.getElementById('soldGallery').appendChild(soldCard);
+      
+      // Remove the original card from active gallery
+      current.remove();
+      
+      // Reattach restore button event
+      soldCard.querySelector('.restore-btn').onclick = function(e) { restorePlayer(this, e); };
+      
+      saveState();
+      
+      // Find the next player by number, not by position in DOM
+      nextPlayerAfterNumber(currentNumber);
+    }
+  }
+
+  function nextPlayerAfterNumber(currentNumber) {
+    const activeCards = Array.from(document.querySelectorAll('#gallery .card'));
+    
+    // Sort cards by their number
+    const sortedCards = activeCards.sort((a, b) => {
+      return parseInt(a.dataset.number) - parseInt(b.dataset.number);
+    });
+    
+    // Find the next card with a higher number
+    const nextCard = sortedCards.find(card => parseInt(card.dataset.number) > currentNumber);
+    
+    if (nextCard) {
+      nextCard.classList.add('active');
+      openViewer(nextCard.querySelector('img').src, nextCard);
+    } else if (sortedCards.length > 0) {
+      // If no higher number found, go to the first card
+      sortedCards[0].classList.add('active');
+      openViewer(sortedCards[0].querySelector('img').src, sortedCards[0]);
+    } else {
+      // If no cards left, close the viewer
+      closeViewer();
+    }
+  }
+
+  function restorePlayer(btn, event) {
+    if (event) event.stopPropagation(); // Prevent fullscreen trigger
+    
+    const card = btn.closest('.card');
+    const cardName = card.dataset.name;
+    const cardNumber = parseInt(card.dataset.number);
+    const imgSrc = card.querySelector('img').src;
+    const cardTitle = card.querySelector('.card-title').textContent;
+    
+    // Remove from sold gallery
+    card.remove();
+    
+    // Create a new card for the active gallery
+    const newCard = document.createElement('div');
+    newCard.className = 'card';
+    newCard.dataset.name = cardName;
+    newCard.dataset.number = cardNumber;
+    newCard.innerHTML = `
+      <img src="${imgSrc}" alt="Preview">
+      <div class="card-title">${cardTitle}</div>
+    `;
+    newCard.onclick = function() { openViewer(imgSrc, this); };
+    
+    // Add to active gallery in correct position (numerical order)
+    const gallery = document.getElementById('gallery');
+    const activeCards = Array.from(gallery.querySelectorAll('.card'));
+    
+    let inserted = false;
+    for (let i = 0; i < activeCards.length; i++) {
+      const otherCardNumber = parseInt(activeCards[i].dataset.number);
+      if (cardNumber < otherCardNumber) {
+        gallery.insertBefore(newCard, activeCards[i]);
+        inserted = true;
+        break;
+      }
+    }
+    if (!inserted) gallery.appendChild(newCard);
+    
+    saveState();
+  }
+
+  function nextPlayer() {
+    const activeCards = Array.from(document.querySelectorAll('#gallery .card'));
+    const current = activeCards.findIndex(c => c.classList.contains('active'));
+    
+    if (current < activeCards.length - 1) {
+      activeCards[current]?.classList.remove('active');
+      activeCards[current + 1]?.classList.add('active');
+      openViewer(activeCards[current + 1].querySelector('img').src, activeCards[current + 1]);
+    } else {
+      closeViewer();
+    }
   }
 
   document.getElementById('search').addEventListener('input', function() {
     const term = normalize(this.value);
-    document.querySelectorAll('.card').forEach(card => {
+    
+    // Filter active players
+    document.querySelectorAll('#gallery .card').forEach(card => {
+      card.style.display = card.dataset.name.includes(term) ? '' : 'none';
+    });
+    
+    // Filter sold players
+    document.querySelectorAll('#soldGallery .card').forEach(card => {
       card.style.display = card.dataset.name.includes(term) ? '' : 'none';
     });
   });
 
   document.addEventListener('keydown', function(e) {
-    const cards = Array.from(document.querySelectorAll('.card'));
-    const visible = cards.filter(c => c.dataset.visible === "true");
-    const current = visible.findIndex(c => c.classList.contains('active'));
-    if (e.key === 'ArrowRight' && current < visible.length - 1) {
-      visible[current]?.classList.remove('active');
-      visible[current + 1]?.classList.add('active');
-      openViewer(visible[current + 1].querySelector('img').src, visible[current + 1].querySelector('img'));
+    const viewer = document.getElementById('viewer');
+    if (viewer.style.display === 'none') return;
+    
+    const activeCards = Array.from(document.querySelectorAll('#gallery .card'));
+    const current = activeCards.findIndex(c => c.classList.contains('active'));
+
+    if (e.key === 'ArrowRight' && current < activeCards.length - 1) {
+      activeCards[current]?.classList.remove('active');
+      activeCards[current + 1]?.classList.add('active');
+      openViewer(activeCards[current + 1].querySelector('img').src, activeCards[current + 1]);
     }
+
     if (e.key === 'ArrowLeft' && current > 0) {
-      visible[current]?.classList.remove('active');
-      visible[current - 1]?.classList.add('active');
-      openViewer(visible[current - 1].querySelector('img').src, visible[current - 1].querySelector('img'));
+      activeCards[current]?.classList.remove('active');
+      activeCards[current - 1]?.classList.add('active');
+      openViewer(activeCards[current - 1].querySelector('img').src, activeCards[current - 1]);
+    }
+
+    if (e.key === 'Escape') {
+      closeViewer();
     }
   });
+
+  // Touch swipe support for mobile
+  let touchStartX = 0;
+  document.getElementById('viewer').addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+  });
+
+  document.getElementById('viewer').addEventListener('touchend', function(e) {
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    const viewer = document.getElementById('viewer');
+    
+    if (viewer.style.display === 'flex' && Math.abs(diff) > 50) {
+      if (diff > 0) {
+        // Swipe left - next player
+        const activeCards = Array.from(document.querySelectorAll('#gallery .card'));
+        const current = activeCards.findIndex(c => c.classList.contains('active'));
+        
+        if (current < activeCards.length - 1) {
+          activeCards[current]?.classList.remove('active');
+          activeCards[current + 1]?.classList.add('active');
+          openViewer(activeCards[current + 1].querySelector('img').src, activeCards[current + 1]);
+        }
+      } else {
+        // Swipe right - previous player
+        const activeCards = Array.from(document.querySelectorAll('#gallery .card'));
+        const current = activeCards.findIndex(c => c.classList.contains('active'));
+        
+        if (current > 0) {
+          activeCards[current]?.classList.remove('active');
+          activeCards[current - 1]?.classList.add('active');
+          openViewer(activeCards[current - 1].querySelector('img').src, activeCards[current - 1]);
+        }
+      }
+    }
+  });
+
+  // --- Load state on startup ---
+  document.addEventListener('DOMContentLoaded', loadState);
 </script>
 </body>
 </html>
