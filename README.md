@@ -175,61 +175,6 @@ All statistics update in real-time and persist across sessions.
 - Hover preloading for adjacent images
 - Throttled scroll events
 
-### Browser Support
-
-- Chrome/Edge (recommended)
-- Firefox
-- Safari
-- Mobile browsers (iOS Safari, Chrome Mobile)
-
----
-
-## 📁 Project Structure
-
-```
-.
-├── index.html                          # Main application file
-├── full_pngs/                          # Player images directory
-│   ├── 1 Virat Kohli.png
-│   ├── 2 Suryakumar Yadav.png
-│   └── ... (127 players)
-├── assets/                    # UI assets
-│   └── unsold,png       # Unsold stamp image
-├── replit.md                           # Project documentation
-└── README.md                           # This file
-```
-
----
-
-## 🎨 Design Features
-
-- **Dark Theme** - `#0d1117` background with `#e6edf3` text
-- **Card Hover Effects** - Smooth `translateY(-5px)` on hover
-- **Rounded Corners** - Modern 16px border radius
-- **Shadow Effects** - Subtle depth with `rgba(0,0,0,0.4)` shadows
-- **Gradient Buttons** - Eye-catching button designs
-- **Smooth Transitions** - 0.2-0.4s ease transitions throughout
-
----
-
-## 🔧 Development
-
-### Running Locally
-
-The application runs on port 5000 using Python's HTTP server:
-
-```bash
-python -m http.server 5000
-```
-
-### Making Changes
-
-1. Edit `index.html` for all changes (styles, scripts, markup)
-2. Restart the server workflow
-3. Hard refresh browser (Ctrl/Cmd + Shift + R)
-
----
-
 ## 📝 Feature Summary
 
 | Feature            | Status | Keyboard Shortcut |
@@ -247,22 +192,6 @@ python -m http.server 5000
 
 ---
 
-## 🎯 Version History
-
-**v1.0.0** - October 22, 2025
-
-- Initial release
-- 127 player cards
-- Sold/Unsold functionality
-- Confetti and stamp effects
-- Statistics counter
-- Quick undo feature
-- Keyboard shortcuts
-- State persistence
-- Mobile optimization
-
----
-
 ## 📄 License
 
 This project is for personal/internal use for IPL auction management.
@@ -273,8 +202,3 @@ This project is for personal/internal use for IPL auction management.
 
 - **canvas-confetti** by Kiril Vatev
 - Player images from IPL official sources
-- Built with ❤️ for smooth auction experiences
-
----
-
-**Enjoy your auction! 🏏🎉**
