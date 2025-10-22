@@ -888,6 +888,7 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <script>
   function normalize(str) {
     return str?.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -1089,6 +1090,30 @@
     const current = document.querySelector('.card.active');
     if (current && current.parentElement.id === 'gallery') {
       const currentNumber = parseInt(current.dataset.number);
+      
+      // Trigger confetti animation
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#28a745', '#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1']
+      });
+      
+      // Additional confetti burst from sides
+      setTimeout(() => {
+        confetti({
+          particleCount: 100,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 100,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 }
+        });
+      }, 200);
       
       // Create a copy for the sold gallery
       const soldCard = current.cloneNode(true);

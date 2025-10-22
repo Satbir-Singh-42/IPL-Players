@@ -9,6 +9,10 @@ A cricket player dashboard application for managing player rosters. This is a st
   - Configured workflow to serve the application on port 5000
   - Added .gitignore for Python and Replit files
   - Verified application is working correctly
+  - **Added confetti animation effect** when marking players as sold
+    - Integrated canvas-confetti library via CDN
+    - Created multi-burst confetti animation with colorful particles
+    - Animation triggers from center and both sides for celebration effect
 
 ## Project Structure
 - `index.html` - Main application file containing all HTML, CSS, and JavaScript
