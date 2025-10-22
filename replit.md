@@ -11,8 +11,14 @@ A cricket player dashboard application for managing player rosters. This is a st
   - Verified application is working correctly
   - **Added confetti animation effect** when marking players as sold
     - Integrated canvas-confetti library via CDN
-    - Created multi-burst confetti animation with colorful particles
-    - Animation triggers from center and both sides for celebration effect
+    - Created multi-burst confetti animation with colorful particles (150 center + 100 left + 100 right)
+    - Fixed confetti to render properly in fullscreen viewer mode
+    - Animation plays for 2 seconds before auto-advancing to next player
+  - **Added "UNSOLD" stamp effect** when marking players as unsold
+    - Displays animated red "UNSOLD" stamp overlay on player image
+    - Stamp appears with scale and rotation animation
+    - Shows for 2 seconds before automatically moving to next player
+    - Responsive sizing (400px desktop, 250px tablet, 180px mobile)
 
 ## Project Structure
 - `index.html` - Main application file containing all HTML, CSS, and JavaScript

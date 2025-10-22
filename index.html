@@ -97,6 +97,26 @@
   color: #fff;
 }
 
+  /* Unsold stamp responsive sizing */
+  #unsoldStamp {
+    width: 400px;
+    height: 400px;
+  }
+
+  @media (max-width: 768px) {
+    #unsoldStamp {
+      width: 250px;
+      height: 250px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    #unsoldStamp {
+      width: 180px;
+      height: 180px;
+    }
+  }
+
   /* Mobile responsiveness */
   @media (max-width: 768px) {
     .grid {
@@ -882,9 +902,10 @@
 <div id="viewer">
   <canvas id="confettiCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></canvas>
   <img id="previewImage" src="">
+  <img id="unsoldStamp" src="attached_assets/unsold_1761163155013.png" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 400px; height: 400px; object-fit: contain; z-index: 10000; opacity: 0; transition: all 0.3s ease;">
   <div id="actionButtons">
     <button id="soldBtn" onclick="markSold()">Sold</button>
-    <button id="unsoldBtn" onclick="nextPlayer()">Unsold</button>
+    <button id="unsoldBtn" onclick="markUnsold()">Unsold</button>
     <button id="closeBtn" onclick="closeViewer()">Close</button>
   </div>
 </div>
@@ -1235,6 +1256,26 @@
     if (!inserted) gallery.appendChild(newCard);
     
     saveState();
+  }
+
+  function markUnsold() {
+    const stamp = document.getElementById('unsoldStamp');
+    
+    // Show the stamp with animation
+    stamp.style.transform = 'translate(-50%, -50%) scale(1) rotate(-5deg)';
+    stamp.style.opacity = '1';
+    
+    console.log('Unsold stamp displayed');
+    
+    // Wait 2 seconds then move to next player
+    setTimeout(() => {
+      // Hide the stamp
+      stamp.style.transform = 'translate(-50%, -50%) scale(0)';
+      stamp.style.opacity = '0';
+      
+      // Move to next player
+      nextPlayer();
+    }, 2000);
   }
 
   function nextPlayer() {
