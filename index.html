@@ -1091,29 +1091,40 @@
     if (current && current.parentElement.id === 'gallery') {
       const currentNumber = parseInt(current.dataset.number);
       
+      console.log('markSold called, confetti available:', typeof confetti);
+      
       // Trigger confetti animation
-      confetti({
-        particleCount: 150,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#28a745', '#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1']
-      });
+      if (typeof confetti !== 'undefined') {
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#28a745', '#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1']
+        });
+        
+        console.log('First confetti burst triggered');
+      } else {
+        console.error('Confetti library not loaded!');
+      }
       
       // Additional confetti burst from sides
-      setTimeout(() => {
-        confetti({
-          particleCount: 100,
-          angle: 60,
-          spread: 55,
-          origin: { x: 0 }
-        });
-        confetti({
-          particleCount: 100,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1 }
-        });
-      }, 200);
+      if (typeof confetti !== 'undefined') {
+        setTimeout(() => {
+          confetti({
+            particleCount: 100,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 }
+          });
+          confetti({
+            particleCount: 100,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 }
+          });
+          console.log('Side confetti bursts triggered');
+        }, 200);
+      }
       
       // Create a copy for the sold gallery
       const soldCard = current.cloneNode(true);
