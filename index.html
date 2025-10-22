@@ -1174,10 +1174,10 @@
       
       saveState();
       
-      // Wait 2 seconds to enjoy the confetti, then move to next player
+      // Wait 1 second to enjoy the confetti, then move to next player
       setTimeout(() => {
         nextPlayerAfterNumber(currentNumber);
-      }, 2000);
+      }, 1000);
     }
   }
 
@@ -1267,7 +1267,7 @@
     
     console.log('Unsold stamp displayed');
     
-    // Wait 2 seconds then move to next player
+    // Wait 1 second then move to next player
     setTimeout(() => {
       // Hide the stamp
       stamp.style.transform = 'translate(-50%, -50%) scale(0)';
@@ -1275,7 +1275,7 @@
       
       // Move to next player
       nextPlayer();
-    }, 2000);
+    }, 1000);
   }
 
   function nextPlayer() {
