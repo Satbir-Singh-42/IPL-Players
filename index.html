@@ -880,6 +880,7 @@
 </main>
 
 <div id="viewer">
+  <canvas id="confettiCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></canvas>
   <img id="previewImage" src="">
   <div id="actionButtons">
     <button id="soldBtn" onclick="markSold()">Sold</button>
@@ -1093,36 +1094,43 @@
       
       console.log('markSold called, confetti available:', typeof confetti);
       
-      // Trigger confetti animation
-      if (typeof confetti !== 'undefined') {
-        confetti({
+      // Get the canvas element inside the viewer for confetti
+      const canvas = document.getElementById('confettiCanvas');
+      const myConfetti = confetti.create(canvas, {
+        resize: true,
+        useWorker: true
+      });
+      
+      // Trigger confetti animation on the viewer canvas
+      if (typeof myConfetti !== 'undefined') {
+        myConfetti({
           particleCount: 150,
           spread: 70,
           origin: { y: 0.6 },
           colors: ['#28a745', '#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1']
         });
         
-        console.log('First confetti burst triggered');
+        console.log('First confetti burst triggered on canvas');
       } else {
         console.error('Confetti library not loaded!');
       }
       
       // Additional confetti burst from sides
-      if (typeof confetti !== 'undefined') {
+      if (typeof myConfetti !== 'undefined') {
         setTimeout(() => {
-          confetti({
+          myConfetti({
             particleCount: 100,
             angle: 60,
             spread: 55,
             origin: { x: 0 }
           });
-          confetti({
+          myConfetti({
             particleCount: 100,
             angle: 120,
             spread: 55,
             origin: { x: 1 }
           });
-          console.log('Side confetti bursts triggered');
+          console.log('Side confetti bursts triggered on canvas');
         }, 200);
       }
       
