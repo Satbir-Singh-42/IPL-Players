@@ -208,6 +208,30 @@
     height: 100%;
   }
   
+  /* Statistics Counter */
+  #statsCounter {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(22, 27, 34, 0.95);
+    color: #e6edf3;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 10001;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    border: 1px solid #30363d;
+  }
+  
+  #statsCounter span {
+    margin: 0 8px;
+  }
+  
+  #statsCounter .active-count { color: #3fb950; }
+  #statsCounter .sold-count { color: #ffd700; }
+  #statsCounter .unsold-count { color: #f85149; }
+  
   /* Loading animation */
   @keyframes pulse {
     0% { opacity: 0.6; }
@@ -250,6 +274,12 @@
 </style>
 </head>
 <body>
+<div id="statsCounter">
+  <span class="active-count">Active: <span id="activeCount">0</span></span> | 
+  <span class="sold-count">Sold: <span id="soldCount">0</span></span> | 
+  <span class="unsold-count">Unsold: <span id="unsoldCount">0</span></span>
+</div>
+
 <header>
   <h1>Player Dashboard</h1>
   <input type="search" id="search" class="search-box" placeholder="Search players...">
@@ -912,8 +942,22 @@
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <script>
+  // Track last action for undo
+  let lastAction = null;
+  let unsoldCount = 0;
+
   function normalize(str) {
     return str?.toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
+  
+  // Update statistics counter
+  function updateStats() {
+    const activeCount = document.querySelectorAll('#gallery .card').length;
+    const soldCount = document.querySelectorAll('#soldGallery .card').length;
+    
+    document.getElementById('activeCount').textContent = activeCount;
+    document.getElementById('soldCount').textContent = soldCount;
+    document.getElementById('unsoldCount').textContent = unsoldCount;
   }
 
   // --- Enhanced Image Loading System ---
@@ -1172,7 +1216,16 @@
       // Reattach restore button event
       soldCard.querySelector('.restore-btn').onclick = function(e) { restorePlayer(this, e); };
       
+      // Save last action for undo
+      lastAction = {
+        type: 'sold',
+        card: soldCard,
+        originalCard: current.cloneNode(true),
+        playerNumber: currentNumber
+      };
+      
       saveState();
+      updateStats();
       
       // Wait 1 second to enjoy the confetti, then move to next player
       setTimeout(() => {
@@ -1205,6 +1258,53 @@
       // If no cards left, close the viewer
       closeViewer();
     }
+  }
+
+  function quickUndo() {
+    if (!lastAction) {
+      console.log('No action to undo');
+      return;
+    }
+    
+    if (lastAction.type === 'sold') {
+      // Find and remove the sold card
+      const soldCards = Array.from(document.querySelectorAll('#soldGallery .card'));
+      const soldCard = soldCards.find(c => parseInt(c.dataset.number) === lastAction.playerNumber);
+      
+      if (soldCard) {
+        soldCard.remove();
+        
+        // Restore to active gallery
+        const gallery = document.getElementById('gallery');
+        const originalCard = lastAction.originalCard.cloneNode(true);
+        const imgSrc = originalCard.querySelector('img').src || originalCard.querySelector('img').getAttribute('data-src');
+        originalCard.onclick = function() { openViewer(imgSrc, this); };
+        
+        // Add in correct position
+        const activeCards = Array.from(gallery.querySelectorAll('.card'));
+        let inserted = false;
+        for (let i = 0; i < activeCards.length; i++) {
+          if (lastAction.playerNumber < parseInt(activeCards[i].dataset.number)) {
+            gallery.insertBefore(originalCard, activeCards[i]);
+            inserted = true;
+            break;
+          }
+        }
+        if (!inserted) gallery.appendChild(originalCard);
+        
+        console.log('Undid sold action');
+      }
+    } else if (lastAction.type === 'unsold') {
+      // Just decrement unsold count
+      if (unsoldCount > 0) {
+        unsoldCount--;
+        console.log('Undid unsold action');
+      }
+    }
+    
+    lastAction = null;
+    saveState();
+    updateStats();
   }
 
   function restorePlayer(btn, event) {
@@ -1256,6 +1356,7 @@
     if (!inserted) gallery.appendChild(newCard);
     
     saveState();
+    updateStats();
   }
 
   function markUnsold() {
@@ -1266,6 +1367,18 @@
     stamp.style.opacity = '1';
     
     console.log('Unsold stamp displayed');
+    
+    // Track unsold action
+    unsoldCount++;
+    
+    // Save last action for undo (unsold doesn't move card)
+    const current = document.querySelector('.card.active');
+    lastAction = {
+      type: 'unsold',
+      playerNumber: parseInt(current.dataset.number)
+    };
+    
+    updateStats();
     
     // Wait 1 second then move to next player
     setTimeout(() => {
@@ -1335,6 +1448,13 @@
 
     if (e.key === 'Escape') {
       closeViewer();
+    }
+  });
+  
+  // Global keyboard shortcut for Undo (R key)
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'r' || e.key === 'R') {
+      quickUndo();
     }
   });
 
@@ -1417,6 +1537,7 @@
   // --- Load state on startup ---
   document.addEventListener('DOMContentLoaded', function() {
     loadState();
+    updateStats();
     
     // Load priority images immediately
     setTimeout(() => {

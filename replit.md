@@ -29,13 +29,16 @@ A cricket player dashboard application for managing player rosters. This is a st
 ## Features
 - **Player Gallery**: Displays all active players in a grid layout
 - **Search**: Real-time search functionality to filter players by name
+- **Statistics Counter**: Always-visible corner display showing Active/Sold/Unsold counts
 - **Player Viewer**: Click any player to view their full image
-- **Mark as Sold**: Move players from active roster to sold section
+- **Mark as Sold**: Move players from active roster to sold section with confetti animation
+- **Mark as Unsold**: Skip players with animated stamp effect
+- **Quick Undo (R key)**: Instantly undo last sold/unsold action
 - **Restore Players**: Move sold players back to active roster
 - **State Persistence**: Uses localStorage to remember sold/active player states
 - **Mobile Responsive**: Touch-friendly interface with swipe gestures
 - **Lazy Loading**: Optimized image loading for better performance
-- **Keyboard Navigation**: Arrow keys to navigate between players
+- **Keyboard Navigation**: Arrow keys to navigate, R key to undo
 
 ## Technology Stack
 - Pure HTML5, CSS3, and JavaScript (no frameworks)
