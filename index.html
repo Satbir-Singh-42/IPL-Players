@@ -1134,8 +1134,10 @@
       
       saveState();
       
-      // Find the next player by number, not by position in DOM
-      nextPlayerAfterNumber(currentNumber);
+      // Wait 2 seconds to enjoy the confetti, then move to next player
+      setTimeout(() => {
+        nextPlayerAfterNumber(currentNumber);
+      }, 2000);
     }
   }
 
