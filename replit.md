@@ -17,8 +17,19 @@ A cricket player dashboard application for managing player rosters. This is a st
   - **Added "UNSOLD" stamp effect** when marking players as unsold
     - Displays animated red "UNSOLD" stamp overlay on player image
     - Stamp appears with scale and rotation animation
-    - Shows for 2 seconds before automatically moving to next player
+    - Shows for 1 second before automatically moving to next player
     - Responsive sizing (400px desktop, 250px tablet, 180px mobile)
+    - Unsold stamp indicator now appears on gallery cards for visual tracking
+  - **Added keyboard shortcuts for faster workflow**
+    - S key: Mark as Sold
+    - U key: Mark as Unsold
+    - C key: Close viewer
+    - R key: Quick Undo (also opens last player automatically)
+  - **Statistics counter** shows real-time Active/Sold/Unsold counts
+    - Always visible in top-right corner, even in fullscreen
+  - **Quick Undo enhancement**
+    - Automatically opens the last processed player when pressing R
+    - Removes unsold stamp from gallery when undoing unsold action
 
 ## Project Structure
 - `index.html` - Main application file containing all HTML, CSS, and JavaScript

@@ -38,10 +38,13 @@ A modern, feature-rich cricket player dashboard application designed for managin
 - **Counter Update** - Unsold count updates in real-time
 
 ### ⌨️ Keyboard Shortcuts
+- **S** - Mark player as Sold (when viewing)
+- **U** - Mark player as Unsold (when viewing)
+- **C** - Close player viewer
 - **R** - Quick Undo (reverses last Sold or Unsold action)
 - **Arrow Left** - Previous player (when viewing)
 - **Arrow Right** - Next player (when viewing)
-- **Escape** - Close player viewer
+- **Escape** - Close player viewer (alternative to C)
 
 ### 🔄 Quick Undo (R Key)
 - Instantly undo the last action
@@ -207,9 +210,9 @@ python -m http.server 5000
 | Feature | Status | Keyboard Shortcut |
 |---------|--------|-------------------|
 | Search Players | ✅ | - |
-| Fullscreen Viewer | ✅ | Escape to close |
-| Sold with Confetti | ✅ | - |
-| Unsold with Stamp | ✅ | - |
+| Fullscreen Viewer | ✅ | C or Escape |
+| Sold with Confetti | ✅ | S |
+| Unsold with Stamp | ✅ | U |
 | Statistics Counter | ✅ | - |
 | Quick Undo | ✅ | R |
 | Navigation | ✅ | ← → |

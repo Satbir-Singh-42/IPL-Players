@@ -21,6 +21,32 @@
   .card img { width: 100%; height: auto; border-radius: 8px; cursor: pointer; transition: opacity 0.3s ease; }
   .card img[data-src] { opacity: 0; }
   .card img.loaded { opacity: 1; }
+  
+  /* Unsold stamp on gallery cards */
+  .card .unsold-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 80px;
+    height: 80px;
+    opacity: 0.9;
+    pointer-events: none;
+    z-index: 10;
+  }
+  
+  @media (max-width: 768px) {
+    .card .unsold-indicator {
+      width: 60px;
+      height: 60px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .card .unsold-indicator {
+      width: 50px;
+      height: 50px;
+    }
+  }
   .card-title { margin-top: 8px; font-size: 18px; font-weight: 600; }
 
   .restore-btn {
@@ -1266,10 +1292,12 @@
       return;
     }
     
+    const playerNumber = lastAction.playerNumber;
+    
     if (lastAction.type === 'sold') {
       // Find and remove the sold card
       const soldCards = Array.from(document.querySelectorAll('#soldGallery .card'));
-      const soldCard = soldCards.find(c => parseInt(c.dataset.number) === lastAction.playerNumber);
+      const soldCard = soldCards.find(c => parseInt(c.dataset.number) === playerNumber);
       
       if (soldCard) {
         soldCard.remove();
@@ -1284,7 +1312,7 @@
         const activeCards = Array.from(gallery.querySelectorAll('.card'));
         let inserted = false;
         for (let i = 0; i < activeCards.length; i++) {
-          if (lastAction.playerNumber < parseInt(activeCards[i].dataset.number)) {
+          if (playerNumber < parseInt(activeCards[i].dataset.number)) {
             gallery.insertBefore(originalCard, activeCards[i]);
             inserted = true;
             break;
@@ -1295,12 +1323,35 @@
         console.log('Undid sold action');
       }
     } else if (lastAction.type === 'unsold') {
-      // Just decrement unsold count
+      // Remove unsold indicator from the card
+      const activeCards = Array.from(document.querySelectorAll('#gallery .card'));
+      const unsoldCard = activeCards.find(c => parseInt(c.dataset.number) === playerNumber);
+      
+      if (unsoldCard) {
+        const indicator = unsoldCard.querySelector('.unsold-indicator');
+        if (indicator) {
+          indicator.remove();
+        }
+      }
+      
+      // Decrement unsold count
       if (unsoldCount > 0) {
         unsoldCount--;
         console.log('Undid unsold action');
       }
     }
+    
+    // Open the player viewer for the last processed player
+    setTimeout(() => {
+      const allCards = Array.from(document.querySelectorAll('#gallery .card'));
+      const targetCard = allCards.find(c => parseInt(c.dataset.number) === playerNumber);
+      
+      if (targetCard) {
+        const imgElement = targetCard.querySelector('img');
+        const imgSrc = imgElement.src || imgElement.getAttribute('data-src');
+        openViewer(imgSrc, targetCard);
+      }
+    }, 100);
     
     lastAction = null;
     saveState();
@@ -1373,10 +1424,24 @@
     
     // Save last action for undo (unsold doesn't move card)
     const current = document.querySelector('.card.active');
+    const playerNumber = parseInt(current.dataset.number);
+    
     lastAction = {
       type: 'unsold',
-      playerNumber: parseInt(current.dataset.number)
+      playerNumber: playerNumber
     };
+    
+    // Add unsold indicator to the card in the gallery
+    const galleryCards = Array.from(document.querySelectorAll('#gallery .card'));
+    const targetCard = galleryCards.find(c => parseInt(c.dataset.number) === playerNumber);
+    
+    if (targetCard && !targetCard.querySelector('.unsold-indicator')) {
+      const indicator = document.createElement('img');
+      indicator.src = 'attached_assets/unsold_1761163848644.png';
+      indicator.className = 'unsold-indicator';
+      indicator.alt = 'Unsold';
+      targetCard.appendChild(indicator);
+    }
     
     updateStats();
     
@@ -1446,8 +1511,16 @@
       openViewer(imgSrc, activeCards[current - 1]);
     }
 
-    if (e.key === 'Escape') {
+    if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
       closeViewer();
+    }
+    
+    if (e.key === 's' || e.key === 'S') {
+      markSold();
+    }
+    
+    if (e.key === 'u' || e.key === 'U') {
+      markUnsold();
     }
   });
   
